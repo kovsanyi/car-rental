@@ -1,6 +1,8 @@
 package hu.unideb.inf.carrental.site.resource.model;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Max;
@@ -13,29 +15,39 @@ public class UpdateSiteRequest {
 
     @NotBlank
     @Email
+    @Length(max = Constants.Site.EMAIL_MAX_LENGTH)
     private String email;
 
     @NotBlank
+    @Length(min = Constants.Site.PHONE_MIN_LENGTH,
+            max = Constants.Site.PHONE_MAX_LENGTH)
     private String phoneNumber;
 
     @NotNull
-    @Min(1000)
-    @Max(10000)
+    @Min(Constants.Site.ZIP_CODE_MIN_VALUE)
+    @Max(Constants.Site.ZIP_CODE_MAX_VALUE)
     private Integer zipCode;
 
     @NotBlank
+    @Length(min = Constants.Site.CITY_MIN_LENGTH,
+            max = Constants.Site.CITY_MAX_LENGTH)
     private String city;
 
     @NotBlank
+    @Length(min = Constants.Site.ADDRESS_MIN_LENGTH,
+            max = Constants.Site.ADDRESS_MAX_LENGTH)
     private String address;
 
     @NotBlank
+    @Length(min = Constants.Site.OPENING_HOURS_MIN_LENGTH,
+            max = Constants.Site.OPENING_HOURS_MAX_LENGTH)
     private String openingHours;
 
     public UpdateSiteRequest() {
     }
 
-    public UpdateSiteRequest(Long id, String email, String phoneNumber, Integer zipCode, String city, String address, String openingHours) {
+    public UpdateSiteRequest(Long id, String email, String phoneNumber, Integer zipCode,
+                             String city, String address, String openingHours) {
         this.id = id;
         this.email = email;
         this.phoneNumber = phoneNumber;

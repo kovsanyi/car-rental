@@ -1,5 +1,6 @@
 package hu.unideb.inf.carrental.manager.resource.model;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -10,31 +11,43 @@ import javax.validation.constraints.NotNull;
 
 public class CreateManagerRequest {
     @NotBlank
-    @Length(min = 4)
+    @Length(min = Constants.User.USERNAME_MIN_LENGTH,
+            max = Constants.User.USERNAME_MAX_LENGTH)
     private String userUsername;
 
     @NotBlank
-    @Length(min = 5)
+    @Length(min = Constants.User.PASSWORD_MIN_LENGTH,
+            max = Constants.User.PASSWORD_MAX_LENGTH)
     private String userPassword;
 
+    @NotBlank
     @Email
+    @Length(max = Constants.User.EMAIL_MAX_LENGTH)
     private String userEmail;
 
     @NotBlank
+    @Length(min = Constants.User.FULL_NAME_MIN_LENGTH,
+            max = Constants.User.FULL_NAME_MAX_LENGTH)
     private String fullName;
 
     @NotBlank
+    @Length(min = Constants.User.PHONE_MIN_LENGTH,
+            max = Constants.User.PHONE_MAX_LENGTH)
     private String phoneNumber;
 
     @NotNull
-    @Min(1000)
-    @Max(10000)
+    @Min(Constants.User.ZIP_CODE_MIN_VALUE)
+    @Max(Constants.User.ZIP_CODE_MAX_VALUE)
     private Integer zipCode;
 
     @NotBlank
+    @Length(min = Constants.User.CITY_MIN_LENGTH,
+            max = Constants.User.CITY_MAX_LENGTH)
     private String city;
 
     @NotBlank
+    @Length(min = Constants.User.ADDRESS_MIN_LENGTH,
+            max = Constants.User.ADDRESS_MAX_LENGTH)
     private String address;
 
     public CreateManagerRequest() {

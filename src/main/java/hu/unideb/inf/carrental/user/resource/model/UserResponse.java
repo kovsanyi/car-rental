@@ -3,9 +3,7 @@ package hu.unideb.inf.carrental.user.resource.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 
-/**
- * JsonProperty for supporting backward compatibility.
- */
+// JsonProperty for supporting backward compatibility.
 public class UserResponse {
     @JsonProperty("userId")
     private Long id;

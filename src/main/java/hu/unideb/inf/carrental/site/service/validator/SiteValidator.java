@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class SiteValidator {
     private static final Logger logger = LoggerFactory.getLogger(SiteValidator.class);
@@ -27,6 +29,7 @@ public class SiteValidator {
         this.managerRepository = managerRepository;
     }
 
+    @Transactional
     public void validate(Site site) throws UnauthorizedAccessException {
         logger.info("Validating site");
         UserRole role = SecurityUtils.getLoggedInUser().getRole();

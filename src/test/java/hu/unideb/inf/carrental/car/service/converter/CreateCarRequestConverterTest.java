@@ -18,7 +18,7 @@ public class CreateCarRequestConverterTest {
 
     @Test
     public void from() throws Exception {
-        CreateCarRequest createCarRequest = new CreateCarRequest(1L, CarCategory.Crossover, "Brand", "Model", 1, 1, FuelType.Benzin, 1.0F, 1, 1, 1);
+        CreateCarRequest createCarRequest = new CreateCarRequest(1L, CarCategory.Crossover, "Brand", "Model", 1, 1, FuelType.Petrol, 1.0F, 1, 1, 1);
         Car car = createCarRequestConverter.from(createCarRequest);
         assert car.getId() == null;
         assert car.getSite().getId().equals(createCarRequest.getSiteId());

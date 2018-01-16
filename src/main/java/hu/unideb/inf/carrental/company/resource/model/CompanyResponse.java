@@ -17,7 +17,8 @@ public class CompanyResponse {
     public CompanyResponse() {
     }
 
-    public CompanyResponse(Long id, Long userId, String userUsername, String userEmail, String userRole, String name, String email, String phoneNumber, String fullName, Integer zipCode, String city, String address) {
+    public CompanyResponse(Long id, Long userId, String userUsername, String userEmail, String userRole, String name,
+                           String email, String phoneNumber, String fullName, Integer zipCode, String city, String address) {
         this.id = id;
         this.userId = userId;
         this.userUsername = userUsername;

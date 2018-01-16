@@ -50,4 +50,51 @@ public final class Constants {
     //Commons
     public final static String INVALID_DATE = "Date is invalid";
     public final static String NO_RIGHTS = "No rights to the operation";
+
+    public interface Car {
+        int BRAND_MIN_LENGTH = 2;
+        int BRAND_MAX_LENGTH = 20;
+        int MODEL_MIN_LENGTH = 2;
+        int MODEL_MAX_LENGTH = 20;
+        int YEAR_MIN_VALUE = 2000;
+        int YEAR_MAX_VALUE = 2018;
+        int SEAT_NUMBER_MAX_VALUE = 9;
+        int TANK_CAPACITY_MAX_VALUE = 999;
+        int TRUNK_CAPACITY_MAX_VALUE = 999;
+        int PRICE_MAX_VALUE = 500000;
+    }
+
+    public interface Site {
+        int ZIP_CODE_MIN_VALUE = 1000;
+        int ZIP_CODE_MAX_VALUE = 10000;
+        int CITY_MIN_LENGTH = 3;
+        int CITY_MAX_LENGTH = 50;
+        int ADDRESS_MIN_LENGTH = 3;
+        int ADDRESS_MAX_LENGTH = 50;
+        int EMAIL_MAX_LENGTH = 50;
+        int PHONE_MIN_LENGTH = 11;
+        int PHONE_MAX_LENGTH = 15;
+        int OPENING_HOURS_MIN_LENGTH = 5;
+        int OPENING_HOURS_MAX_LENGTH = 100;
+    }
+
+    public interface User {
+        int USERNAME_MIN_LENGTH = 5;
+        int USERNAME_MAX_LENGTH = 20;
+        int PASSWORD_MIN_LENGTH = 6;
+        int PASSWORD_MAX_LENGTH = 20;
+        int EMAIL_MAX_LENGTH = 50;
+        int FULL_NAME_MIN_LENGTH = 5;
+        int FULL_NAME_MAX_LENGTH = 30;
+        int PHONE_MIN_LENGTH = 11;
+        int PHONE_MAX_LENGTH = 15;
+        int ZIP_CODE_MIN_VALUE = 1000;
+        int ZIP_CODE_MAX_VALUE = 10000;
+        int CITY_MIN_LENGTH = 3;
+        int CITY_MAX_LENGTH = 50;
+        int ADDRESS_MIN_LENGTH = 3;
+        int ADDRESS_MAX_LENGTH = 50;
+        int COMPANY_NAME_MIN_LENGTH = 3;
+        int COMPANY_NAME_MAX_LENGTH = 30;
+    }
 }

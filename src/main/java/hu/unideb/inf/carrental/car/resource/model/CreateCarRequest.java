@@ -1,9 +1,13 @@
 package hu.unideb.inf.carrental.car.resource.model;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.CarCategory;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.FuelType;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class CreateCarRequest {
@@ -14,15 +18,22 @@ public class CreateCarRequest {
     private CarCategory category;
 
     @NotBlank
+    @Length(min = Constants.Car.BRAND_MIN_LENGTH,
+            max = Constants.Car.BRAND_MAX_LENGTH)
     private String brand;
 
     @NotBlank
+    @Length(min = Constants.Car.MODEL_MIN_LENGTH,
+            max = Constants.Car.MODEL_MAX_LENGTH)
     private String model;
 
     @NotNull
+    @Max(Constants.Car.TRUNK_CAPACITY_MAX_VALUE)
     private Integer trunkCapacity;
 
     @NotNull
+    @Min(Constants.Car.YEAR_MIN_VALUE)
+    @Max(Constants.Car.YEAR_MAX_VALUE)
     private Integer year;
 
     @NotNull
@@ -32,18 +43,23 @@ public class CreateCarRequest {
     private Float fuelConsumption;
 
     @NotNull
+    @Max(Constants.Car.TANK_CAPACITY_MAX_VALUE)
     private Integer tankCapacity;
 
     @NotNull
+    @Max(Constants.Car.SEAT_NUMBER_MAX_VALUE)
     private Integer seatNumber;
 
     @NotNull
+    @Max(Constants.Car.PRICE_MAX_VALUE)
     private Integer price;
 
     public CreateCarRequest() {
     }
 
-    public CreateCarRequest(Long siteId, CarCategory category, String brand, String model, Integer trunkCapacity, Integer year, FuelType fuelType, Float fuelConsumption, Integer tankCapacity, Integer seatNumber, Integer price) {
+    public CreateCarRequest(Long siteId, CarCategory category, String brand, String model, Integer trunkCapacity,
+                            Integer year, FuelType fuelType, Float fuelConsumption, Integer tankCapacity,
+                            Integer seatNumber, Integer price) {
         this.siteId = siteId;
         this.category = category;
         this.brand = brand;

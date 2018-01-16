@@ -15,7 +15,8 @@ public class ManagerResponse {
     public ManagerResponse() {
     }
 
-    public ManagerResponse(Long id, Long userId, String userUsername, String userEmail, String userRole, String fullName, String phoneNumber, Integer zipCode, String city, String address) {
+    public ManagerResponse(Long id, Long userId, String userUsername, String userEmail, String userRole,
+                           String fullName, String phoneNumber, Integer zipCode, String city, String address) {
         this.id = id;
         this.userId = userId;
         this.userUsername = userUsername;
