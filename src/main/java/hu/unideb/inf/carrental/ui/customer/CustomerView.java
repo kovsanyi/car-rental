@@ -24,6 +24,7 @@ public class CustomerView extends VerticalLayout implements View {
     @Autowired
     public CustomerView(CarService carService) {
         this.carService = carService;
+
         setWidth(100, Unit.PERCENTAGE);
         setMargin(false);
         setSpacing(false);
@@ -126,7 +127,7 @@ public class CustomerView extends VerticalLayout implements View {
                     //TODO what to do if input is not valid
                     minPrice.getOptionalValue().isPresent() ? Integer.parseInt(minPrice.getValue()) : null,
                     maxPrice.getOptionalValue().isPresent() ? Integer.parseInt(maxPrice.getValue()) : null
-            ).stream().map(CarItem::new).forEach(searchResults::addComponent);
+            ).stream().map(carResponse -> new CarItem(carResponse, null)).forEach(searchResults::addComponent);
         });
 
     }

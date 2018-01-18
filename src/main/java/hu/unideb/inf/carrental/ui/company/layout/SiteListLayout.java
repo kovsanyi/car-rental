@@ -14,6 +14,7 @@ public class SiteListLayout extends GridLayout {
         setSizeUndefined();
         setSpacing(true);
         setDefaultComponentAlignment(Alignment.TOP_LEFT);
+        setColumns(3);
 
         siteResponses.stream().map(SiteItem::new).forEach(this::addComponent);
     }

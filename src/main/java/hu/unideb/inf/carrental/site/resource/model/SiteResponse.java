@@ -2,8 +2,8 @@ package hu.unideb.inf.carrental.site.resource.model;
 
 public class SiteResponse {
     private Long id;
-    private String companyId;
-    private String managerId;
+    private Integer companyId;
+    private Integer managerId;
     private String email;
     private String phoneNumber;
     private Integer zipCode;
@@ -19,19 +19,19 @@ public class SiteResponse {
         this.id = id;
     }
 
-    public String getCompanyId() {
+    public Integer getCompanyId() {
         return companyId;
     }
 
-    public void setCompanyId(String companyId) {
+    public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
 
-    public String getManagerId() {
+    public Integer getManagerId() {
         return managerId;
     }
 
-    public void setManagerId(String managerId) {
+    public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
 

@@ -36,6 +36,8 @@ public class SignUpView extends VerticalLayout implements View {
         this.companyService = companyService;
         this.managerService = managerService;
 
+        componentWithValidation = new HashMap<>();
+
         setSizeFull();
         setMargin(false);
         setSpacing(false);
@@ -50,8 +52,6 @@ public class SignUpView extends VerticalLayout implements View {
 
         addComponent(wrapper);
         setComponentAlignment(wrapper, Alignment.MIDDLE_CENTER);
-
-        componentWithValidation = new HashMap<>();
     }
 
     private AbstractLayout buildContent() {
@@ -154,7 +154,7 @@ public class SignUpView extends VerticalLayout implements View {
         companyName = new TextField("Company name");
         companyName.setWidth(100.f, Unit.PERCENTAGE);
         companyName.setMaxLength(Constants.User.COMPANY_NAME_MAX_LENGTH);
-        companyName.addBlurListener(e -> validateTextField(username, Constants.User.COMPANY_NAME_MIN_LENGTH));
+        companyName.addBlurListener(e -> validateTextField(companyName, Constants.User.COMPANY_NAME_MIN_LENGTH));
         companyName.setVisible(false);
         return companyName;
     }
@@ -194,14 +194,14 @@ public class SignUpView extends VerticalLayout implements View {
     }
 
     private Component buildCreateButton() {
-        Button create = new Button("Add", e -> create());
+        Button create = new Button("Create an account", e -> create());
         create.setWidth(100.f, Unit.PERCENTAGE);
         create.setStyleName(ValoTheme.BUTTON_FRIENDLY);
         return create;
     }
 
     private Component buildCancelButton() {
-        Button cancel = new Button("Cancel",
+        Button cancel = new Button("Back",
                 e -> CarRentalUI.getCurrent().getNavigator().navigateTo(LoginView.VIEW_NAME));
         cancel.setWidth(100.f, Unit.PERCENTAGE);
         return cancel;
@@ -249,6 +249,7 @@ public class SignUpView extends VerticalLayout implements View {
                     );
                     customerService.save(createCustomerRequest);
                 }
+
                 CarRentalUI.getCurrent().getPage().reload();
             } catch (UsernameAlreadyInUseException e) {
                 Notification.show("Entered username already in use!",
@@ -265,7 +266,7 @@ public class SignUpView extends VerticalLayout implements View {
             }
         } else {
             Notification.show("To create an account, please fill in all fields correctly!",
-                    Notification.Type.ASSISTIVE_NOTIFICATION);
+                    Notification.Type.WARNING_MESSAGE);
         }
     }
 

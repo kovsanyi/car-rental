@@ -29,49 +29,50 @@ public class LoginView extends VerticalLayout implements View {
         setSpacing(false);
 
         final VerticalLayout wrapper = new VerticalLayout();
-        wrapper.setSizeUndefined();
+        wrapper.setMargin(false);
+        wrapper.setWidth(1366.f, Unit.PIXELS);
+        wrapper.setHeightUndefined();
+        wrapper.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 
-        final Component loginForm = buildLoginForm();
-        wrapper.addComponent(loginForm);
-        wrapper.setComponentAlignment(loginForm, Alignment.TOP_CENTER);
-
-        final Component signUpLabel = buildSignUpLabel();
-        wrapper.addComponent(signUpLabel);
-        wrapper.setComponentAlignment(signUpLabel, Alignment.BOTTOM_LEFT);
+        wrapper.addComponent(buildContent());
 
         addComponent(wrapper);
         setComponentAlignment(wrapper, Alignment.MIDDLE_CENTER);
     }
 
-    private Component buildLoginForm() {
-        final VerticalLayout loginPanel = new VerticalLayout();
-        loginPanel.setSizeUndefined();
-        loginPanel.setMargin(false);
+    private AbstractLayout buildContent() {
+        final VerticalLayout content = new VerticalLayout();
+        content.setSizeUndefined();
+        content.setMargin(false);
 
-        loginPanel.addComponent(buildFields());
-        return loginPanel;
+        content.addComponent(buildLoginForm());
+        content.addComponent(buildSignUp());
+
+        return content;
     }
 
-    private Component buildSignUpLabel() {
-        final HorizontalLayout signUpPanel = new HorizontalLayout();
-        signUpPanel.setSizeUndefined();
-        signUpPanel.setMargin(false);
+    private AbstractLayout buildLoginForm() {
+        final HorizontalLayout loginLayout = new HorizontalLayout();
+        loginLayout.setMargin(false);
+        loginLayout.setSizeUndefined();
 
-        signUpPanel.addComponent(new Label("Are you not a member?"));
-        signUpPanel.addComponent(new Link("Sign up now!", new ExternalResource("#!" + SignUpView.VIEW_NAME)));
+        username = new TextField("Username");
+        password = new PasswordField("Password");
 
-        return signUpPanel;
+        loginLayout.addComponent(username);
+        loginLayout.addComponent(password);
+
+        Component login = buildLoginButton();
+        loginLayout.addComponent(login);
+        loginLayout.setComponentAlignment(login, Alignment.BOTTOM_RIGHT);
+
+        return loginLayout;
     }
 
-    private Component buildFields() {
-        final HorizontalLayout fields = new HorizontalLayout();
-
-        final TextField username = new TextField("Username");
-        final PasswordField password = new PasswordField("Password");
+    private Component buildLoginButton() {
         final Button login = new Button("Login");
         login.addStyleName(ValoTheme.BUTTON_PRIMARY);
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        login.focus();
         login.addClickListener(e -> {
             try {
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username.getValue(), password.getValue());
@@ -84,14 +85,24 @@ public class LoginView extends VerticalLayout implements View {
                 Notification.show("Wrong username or password!", Notification.Type.WARNING_MESSAGE);
             }
         });
+        login.focus();
 
-        fields.addComponent(username);
-        fields.addComponent(password);
-        fields.addComponent(login);
-        fields.setComponentAlignment(login, Alignment.BOTTOM_RIGHT);
-
-        return fields;
+        return login;
     }
+
+    private Component buildSignUp() {
+        final HorizontalLayout signUpLayout = new HorizontalLayout();
+        signUpLayout.setMargin(false);
+        signUpLayout.setSizeUndefined();
+
+        signUpLayout.addComponent(new Label("Are you not a member?"));
+        signUpLayout.addComponent(new Link("Sign up now!", new ExternalResource("#!" + SignUpView.VIEW_NAME)));
+
+        return signUpLayout;
+    }
+
+    private TextField username;
+    private PasswordField password;
 
     private final AuthenticationManager authenticationManager;
 
