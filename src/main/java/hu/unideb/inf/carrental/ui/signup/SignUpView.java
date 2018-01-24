@@ -44,7 +44,7 @@ public class SignUpView extends VerticalLayout implements View {
 
         final VerticalLayout wrapper = new VerticalLayout();
         wrapper.setMargin(false);
-        wrapper.setWidth(1366.f, Unit.PIXELS);
+        wrapper.setWidth(hu.unideb.inf.carrental.ui.commons.constant.Constants.Size.WIDTH, Unit.PIXELS);
         wrapper.setHeightUndefined();
         wrapper.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 

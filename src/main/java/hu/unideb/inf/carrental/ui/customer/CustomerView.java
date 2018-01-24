@@ -9,7 +9,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.CarCategory;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.FuelType;
-import hu.unideb.inf.carrental.ui.component.CarItem;
+import hu.unideb.inf.carrental.ui.component.item.CarItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Deprecated
 @UIScope
 @SpringView(name = CustomerView.VIEW_NAME)
 public class CustomerView extends VerticalLayout implements View {

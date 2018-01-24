@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -136,6 +137,7 @@ public class ReservationService {
     }
 
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getActiveByCompany() {
         logger.info("Providing active reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNull(getCompany()).stream()
@@ -143,6 +145,7 @@ public class ReservationService {
     }
 
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getClosedByCompany() {
         logger.info("Providing closed reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNotNull(getCompany()).stream()
@@ -150,6 +153,7 @@ public class ReservationService {
     }
 
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getAllByCompany() {
         logger.info("Providing all reservation of company");
         return reservationRepository.findByCompany(getCompany()).stream()

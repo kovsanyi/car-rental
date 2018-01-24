@@ -21,4 +21,7 @@ public abstract class CarRentalEvent {
 
     public static class OpenCarWindowForAddingEvent {
     }
+
+    public static class LogoutRequestEvent {
+    }
 }

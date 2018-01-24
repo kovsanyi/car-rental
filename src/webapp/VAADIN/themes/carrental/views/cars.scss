@@ -1,0 +1,16 @@
+@import "../commons";
+
+@mixin carrental-cars-view {
+
+  .carsview {
+    @include commons;
+
+    .v-gridlayout {
+      background: rgba(255, 255, 255, 0.90);
+      border: 1px solid rgb(213, 213, 213);
+      border-radius: 5px;
+      padding: 20px;
+    }
+
+  }
+}

@@ -11,10 +11,14 @@ import hu.unideb.inf.carrental.carimage.resource.model.CarImageResponse;
 import hu.unideb.inf.carrental.carimage.service.CarImageService;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.company.service.CompanyService;
+import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.site.service.SiteService;
-import hu.unideb.inf.carrental.ui.CarRentalUI;
-import hu.unideb.inf.carrental.ui.company.layout.CarListLayout;
-import hu.unideb.inf.carrental.ui.company.layout.SiteListLayout;
+import hu.unideb.inf.carrental.statistics.service.StatisticsService;
+import hu.unideb.inf.carrental.ui.company.layout.car.CarLayout;
+import hu.unideb.inf.carrental.ui.company.layout.reservation.ReservationLayout;
+import hu.unideb.inf.carrental.ui.company.layout.site.SiteLayout;
+import hu.unideb.inf.carrental.ui.company.layout.statistics.StatisticsLayout;
+import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenCarWindowForAddingEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenSiteWindowForAddingEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
@@ -23,16 +27,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 @UIScope
 @SpringView(name = CompanyView.VIEW_NAME)
 public class CompanyView extends VerticalLayout implements View {
 
     @Autowired
-    public CompanyView(CompanyService companyService, SiteService siteService, CarService carService, CarImageService carImageService) {
+    public CompanyView(CompanyService companyService, SiteService siteService, CarService carService,
+                       CarImageService carImageService, StatisticsService statisticsService,
+                       ReservationService reservationService) {
         this.companyService = companyService;
         this.siteService = siteService;
         this.carService = carService;
         this.carImageService = carImageService;
+        this.statisticsService = statisticsService;
+        this.reservationService = reservationService;
 
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
 
@@ -65,27 +74,49 @@ public class CompanyView extends VerticalLayout implements View {
         final MenuBar menu = new MenuBar();
         menu.setWidth(100.f, Unit.PERCENTAGE);
 
-        final MenuBar.MenuItem overview = menu.addItem("Overview", e -> displayOverview());
+        final MenuBar.MenuItem overview = menu.addItem("Overview",
+                e -> displayOverview());
+        overview.setIcon(VaadinIcons.HOME);
 
         final MenuBar.MenuItem cars = menu.addItem("Cars", null);
-        final MenuBar.MenuItem displayCars = cars.addItem("Display all", e -> displayCarList());
-        final MenuBar.MenuItem addCar = cars.addItem("Add car", e -> CarRentalEventBus.post(new OpenCarWindowForAddingEvent()));
+        final MenuBar.MenuItem displayCars = cars.addItem("Display all",
+                e -> displayCarList());
+        final MenuBar.MenuItem addCar = cars.addItem("Add car",
+                e -> CarRentalEventBus.post(new OpenCarWindowForAddingEvent()));
 
         final MenuBar.MenuItem sites = menu.addItem("Sites", null);
-        final MenuBar.MenuItem displaySites = sites.addItem("Display all", e -> displaySiteList());
-        final MenuBar.MenuItem addSite = sites.addItem("Add site", e -> CarRentalEventBus.post(new OpenSiteWindowForAddingEvent()));
+        final MenuBar.MenuItem displaySites = sites.addItem("Display all",
+                e -> displaySiteList());
+        final MenuBar.MenuItem addSite = sites.addItem("Add site",
+                e -> CarRentalEventBus.post(new OpenSiteWindowForAddingEvent()));
 
-        final MenuBar.MenuItem statistics = menu.addItem("Statistics", e -> displayStatistics());
+        final MenuBar.MenuItem reservations = menu.addItem("Reservations",
+                e -> displayReservations());
 
-        final MenuBar.MenuItem logout = menu.addItem("Logout", e -> CarRentalUI.logout());
+        final MenuBar.MenuItem statistics = menu.addItem("Statistics",
+                e -> displayStatistics());
+
+        final MenuBar.MenuItem logout = menu.addItem("Logout",
+                e -> CarRentalEventBus.post(new CarRentalEvent.LogoutRequestEvent()));
         logout.setIcon(VaadinIcons.EXIT);
 
         return menu;
     }
 
+    private AbstractOrderedLayout buildBody() {
+        body = new VerticalLayout();
+        body.setMargin(false);
+        body.setSpacing(false);
+        body.setWidth(100.f, Unit.PERCENTAGE);
+        body.setWidthUndefined();
+        //body.setDefaultComponentAlignment(Alignment.TOP_CENTER);
+
+        return body;
+    }
+
     private void displayOverview() {
-        //TODO
         body.removeAllComponents();
+        //TODO
     }
 
     private void displayCarList() {
@@ -102,34 +133,32 @@ public class CompanyView extends VerticalLayout implements View {
             carWithCover.put(carResponse, carImageResponse);
         }
 
-        body.addComponent(new CarListLayout(carWithCover));
+        body.addComponent(new CarLayout(carWithCover));
     }
 
     private void displaySiteList() {
         body.removeAllComponents();
-        body.addComponent(new SiteListLayout(siteService.getByCompany()));
+        body.addComponent(new SiteLayout(siteService.getByCompany()));
+    }
+
+    private void displayReservations() {
+        body.removeAllComponents();
+        body.addComponent(new ReservationLayout(reservationService));
     }
 
     private void displayStatistics() {
-        //TODO
         body.removeAllComponents();
+        body.addComponent(new StatisticsLayout(statisticsService));
     }
 
-    private AbstractLayout buildBody() {
-        body = new VerticalLayout();
-        body.setWidthUndefined();
-        body.setHeightUndefined();
-        body.setDefaultComponentAlignment(Alignment.TOP_CENTER);
-
-        return body;
-    }
-
-    private VerticalLayout body;
+    private AbstractOrderedLayout body;
 
     private final CompanyService companyService;
     private final SiteService siteService;
     private final CarService carService;
     private final CarImageService carImageService;
+    private final StatisticsService statisticsService;
+    private final ReservationService reservationService;
 
-    public static final String VIEW_NAME = "company_view";
+    public static final String VIEW_NAME = "company";
 }

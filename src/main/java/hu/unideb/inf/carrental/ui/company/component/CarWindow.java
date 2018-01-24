@@ -214,7 +214,8 @@ public class CarWindow extends Window {
                         + " successfully added to " + site.getSelectedItem().toString());
                 close();
             } catch (UnauthorizedAccessException e) {
-                Notification.show("Unauthorized access", "You do not have right to save a car!", Notification.Type.ERROR_MESSAGE);
+                Notification.show("Unauthorized access", "You do not have right to save a car!",
+                        Notification.Type.ERROR_MESSAGE);
             } catch (Exception e) {
                 Notification.show("Error",
                         "Something went wrong, please contact the developer!\n" +
