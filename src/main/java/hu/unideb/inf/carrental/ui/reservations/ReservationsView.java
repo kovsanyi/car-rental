@@ -1,50 +1,52 @@
-package hu.unideb.inf.carrental.ui.cars;
+package hu.unideb.inf.carrental.ui.reservations;
 
 import com.vaadin.navigator.View;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
-import hu.unideb.inf.carrental.car.service.CarService;
-import hu.unideb.inf.carrental.carimage.service.CarImageService;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
-import hu.unideb.inf.carrental.company.service.CompanyService;
-import hu.unideb.inf.carrental.ui.cars.content.CompanyCarsContent;
+import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.ui.commons.menu.CarRentalMenu;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
+import hu.unideb.inf.carrental.ui.reservations.content.CompanyReservationsContent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SpringView(name = CarsView.VIEW_NAME)
-public class CarsView extends VerticalLayout implements View {
+@UIScope
+@SpringView(name = ReservationsView.VIEW_NAME)
+public class ReservationsView extends VerticalLayout implements View {
 
     @Autowired
-    public CarsView(CarService carService, CarImageService carImageService, CompanyService companyService) {
-        this.carService = carService;
-        this.carImageService = carImageService;
-        this.companyService = companyService;
+    public ReservationsView(ReservationService reservationService) {
+        this.reservationService = reservationService;
 
         setMargin(new MarginInfo(true, false, false, false));
         setSpacing(true);
         setWidth(100.f, Unit.PERCENTAGE);
         setHeightUndefined();
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
-        addStyleName("carsview");
+        setStyleName("reservationsview");
 
         addComponent(new CarRentalMenu());
 
         switch (SecurityUtils.getLoggedInUser().getRole()) {
             case ROLE_COMPANY:
-                addComponent(new CompanyCarsContent(carService, carImageService, companyService));
+                addComponent(new CompanyReservationsContent(reservationService));
+                break;
+            case ROLE_MANAGER:
+                //TODO code it
+                break;
+            case ROLE_CUSTOMER:
+                //TODO code it
                 break;
             default:
                 UIUtils.showNotification("You have no right to see this page!", Notification.Type.WARNING_MESSAGE);
         }
     }
 
-    private final CarService carService;
-    private final CarImageService carImageService;
-    private final CompanyService companyService;
+    private final ReservationService reservationService;
 
-    public final static String VIEW_NAME = "cars";
+    public static final String VIEW_NAME = "reservation";
 }

@@ -1,0 +1,16 @@
+@mixin carrental-site-view {
+  .siteview {
+    #body {
+      padding: 12px;
+    }
+
+    .v-label#key, .v-label#value {
+      font-size: 1.5em;
+    }
+
+    .v-label#key {
+      font-weight: bold;
+      padding-right: 12px;
+    }
+  }
+}

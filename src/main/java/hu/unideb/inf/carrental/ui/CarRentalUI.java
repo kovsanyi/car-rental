@@ -3,30 +3,31 @@ package hu.unideb.inf.carrental.ui;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
 import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.carimage.service.CarImageService;
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.site.service.SiteService;
-import hu.unideb.inf.carrental.ui.company.component.CarWindow;
-import hu.unideb.inf.carrental.ui.company.component.SiteWindow;
-import hu.unideb.inf.carrental.ui.customer.CustomerView;
+import hu.unideb.inf.carrental.ui.commons.component.window.CarWindow;
+import hu.unideb.inf.carrental.ui.commons.component.window.SiteWindow;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.LogoutRequestEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenCarWindowForAddingEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenSiteWindowForAddingEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenSiteWindowForEditingEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 import hu.unideb.inf.carrental.ui.login.LoginView;
-import hu.unideb.inf.carrental.ui.reservation.ReservationView;
+import hu.unideb.inf.carrental.ui.overview.OverviewView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.servlet.annotation.WebServlet;
 import java.util.Locale;
 
 @Title("Car Rental")
@@ -34,10 +35,15 @@ import java.util.Locale;
 @SpringUI
 public class CarRentalUI extends UI {
 
+    @WebServlet(value = "/*", asyncSupported = true)
+    @VaadinServletConfiguration(productionMode = false, ui = CarRentalUI.class)
+    public static class Servlet extends VaadinServlet {
+    }
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         setLocale(Locale.US);
-        addStyleName("carrental");
+        setStyleName("carrental");
 
         CarRentalEventBus.register(this);
 
@@ -46,16 +52,7 @@ public class CarRentalUI extends UI {
         setNavigator(navigator);
 
         if (SecurityUtils.isLoggedIn()) {
-            if (SecurityUtils.getLoggedInUser().getRole().equals(UserRole.ROLE_CUSTOMER)) {
-                navigator.navigateTo(CustomerView.VIEW_NAME);
-            }
-            if (SecurityUtils.getLoggedInUser().getRole().equals(UserRole.ROLE_COMPANY)) {
-                //navigator.navigateTo(CompanyView.VIEW_NAME);
-                navigator.navigateTo(ReservationView.VIEW_NAME);
-            }
-            if (SecurityUtils.getLoggedInUser().getRole().equals(UserRole.ROLE_MANAGER)) {
-                navigator.navigateTo(CustomerView.VIEW_NAME);
-            }
+            navigator.navigateTo(OverviewView.VIEW_NAME);
         } else {
             navigator.navigateTo(LoginView.VIEW_NAME);
         }
@@ -95,7 +92,6 @@ public class CarRentalUI extends UI {
         this.carImageService = carImageService;
 
         this.carRentalEventBus = new CarRentalEventBus();
-
     }
 
     private final SpringViewProvider viewProvider;

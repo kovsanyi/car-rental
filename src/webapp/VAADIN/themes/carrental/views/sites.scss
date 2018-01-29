@@ -3,14 +3,18 @@
 @mixin carrental-sites-view {
 
   .sitesview {
-    @include commons;
 
-    .v-gridlayout {
-      background: rgba(255, 255, 255, 0.90);
-      border: 1px solid rgb(213, 213, 213);
-      border-radius: 5px;
-      padding: 20px;
+    .v-gridlayout#body {
+      padding: 12px;
     }
 
+    .v-panel {
+      @include animation(valo-animate-out-face 800ms 10ms backwards, valo-animate-in-fade 600ms 100ms backwards);
+    }
+
+    .v-panel:hover {
+      transition: none;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+    }
   }
 }

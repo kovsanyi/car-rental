@@ -30,8 +30,8 @@ public class LoginView extends VerticalLayout implements View {
         setMargin(false);
         setSpacing(false);
         setSizeFull();
-        addStyleName("loginview");
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
+        setStyleName("loginview");
         addComponent(buildContent());
     }
 
@@ -51,17 +51,15 @@ public class LoginView extends VerticalLayout implements View {
 
     private AbstractOrderedLayout buildLabels() {
         final VerticalLayout labelsLayout = new VerticalLayout();
-        labelsLayout.setMargin(true);
-        labelsLayout.setSpacing(true);
         labelsLayout.setWidth(100.f, Unit.PERCENTAGE);
         labelsLayout.setHeightUndefined();
         labelsLayout.setDefaultComponentAlignment(Alignment.TOP_LEFT);
 
-        Label title = new Label("Car Rental");
+        final Label title = new Label("Car Rental");
         title.addStyleName(ValoTheme.LABEL_H1);
         title.addStyleName(ValoTheme.LABEL_NO_MARGIN);
 
-        Label bio = new Label("The easiest way to rent a car");
+        final Label bio = new Label("The easiest way to rent a car");
         bio.addStyleName(ValoTheme.LABEL_H2);
         bio.addStyleName(ValoTheme.LABEL_NO_MARGIN);
 
@@ -74,8 +72,6 @@ public class LoginView extends VerticalLayout implements View {
 
     private AbstractOrderedLayout buildLogin() {
         final VerticalLayout loginLayout = new VerticalLayout();
-        loginLayout.setMargin(true);
-        loginLayout.setSpacing(true);
         loginLayout.setSizeFull();
         loginLayout.setDefaultComponentAlignment(Alignment.TOP_CENTER);
 
@@ -91,7 +87,6 @@ public class LoginView extends VerticalLayout implements View {
         final HorizontalLayout loginLayout = new HorizontalLayout();
         loginLayout.setSizeUndefined();
         loginLayout.setMargin(false);
-        loginLayout.setSpacing(true);
 
         username = new TextField("Username");
         password = new PasswordField("Password");
@@ -104,8 +99,6 @@ public class LoginView extends VerticalLayout implements View {
         loginLayout.setComponentAlignment(login, Alignment.BOTTOM_RIGHT);
 
         final VerticalLayout panelContent = new VerticalLayout();
-        panelContent.setMargin(true);
-        panelContent.setSpacing(true);
         panelContent.addComponents(
                 loginLayout,
                 buildSignUp()
@@ -134,7 +127,8 @@ public class LoginView extends VerticalLayout implements View {
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.addClickListener(e -> {
             try {
-                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username.getValue(), password.getValue());
+                UsernamePasswordAuthenticationToken token =
+                        new UsernamePasswordAuthenticationToken(username.getValue(), password.getValue());
                 Authentication authentication = authenticationManager.authenticate(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

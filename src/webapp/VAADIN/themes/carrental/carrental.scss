@@ -1,19 +1,27 @@
 @import "../valo/valo";
 @import "variables";
 @import "views/login";
-@import "views/reservation";
+@import "views/reservations";
+@import "views/site";
 @import "views/sites";
+@import "views/car";
 @import "views/cars";
 @import "views/statistics";
+@import "item/caritem";
+@import "item/siteitem";
 
 @mixin carrental {
   @include valo;
   @include commons;
   @include carrental-login-view;
-  @include carrental-reservation-view;
+  @include carrental-reservations-view;
+  @include carrental-site-view;
   @include carrental-sites-view;
+  @include carrental-car-view;
   @include carrental-cars-view;
   @include carrental-statistics-view;
+  @include carrental-car-item;
+  @include carrental-site-item;
 
   background: rgb(245, 245, 245) url("img/home-background.jpeg") no-repeat;
   background-size: 100%;

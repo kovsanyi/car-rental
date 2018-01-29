@@ -1,0 +1,11 @@
+@import "../commons";
+
+@mixin carrental-reservations-view {
+
+  .reservationsview {
+
+    .v-accordion, .v-grid-tablewrapper {
+      border: 0;
+    }
+  }
+}

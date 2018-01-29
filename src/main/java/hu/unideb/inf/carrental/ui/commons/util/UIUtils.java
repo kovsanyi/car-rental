@@ -19,4 +19,10 @@ public final class UIUtils {
         notification.setPosition(Position.BOTTOM_CENTER);
         notification.show(CarRentalUI.getCurrent().getPage());
     }
+
+    public static class HTML {
+        public static String bold(String text) {
+            return String.format("<b>%s</b>", text);
+        }
+    }
 }
