@@ -1,0 +1,17 @@
+@import "login";
+@import "reservation";
+@import "cars";
+@import "sites";
+@import "statistics";
+@import "car";
+@import "site";
+
+@mixin car-rental-views{
+  @include carrental-login-view;
+  @include car-rental-reservation-view;
+  @include car-rental-cars-view;
+  @include car-rental-sites-view;
+  @include car-rental-statistics-view;
+  @include car-rental-car-view;
+  @include car-rental-site-view;
+}

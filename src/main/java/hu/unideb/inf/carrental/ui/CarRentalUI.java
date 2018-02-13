@@ -11,19 +11,22 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.UI;
+import hu.unideb.inf.carrental.car.resource.model.CarResponse;
 import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.carimage.service.CarImageService;
+import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
+import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
+import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.site.service.SiteService;
+import hu.unideb.inf.carrental.ui.carsearch.CarSearchView;
 import hu.unideb.inf.carrental.ui.commons.component.window.CarWindow;
+import hu.unideb.inf.carrental.ui.commons.component.window.ReservationWindow;
 import hu.unideb.inf.carrental.ui.commons.component.window.SiteWindow;
-import hu.unideb.inf.carrental.ui.event.CarRentalEvent.LogoutRequestEvent;
-import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenCarWindowForAddingEvent;
-import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenSiteWindowForAddingEvent;
-import hu.unideb.inf.carrental.ui.event.CarRentalEvent.OpenSiteWindowForEditingEvent;
+import hu.unideb.inf.carrental.ui.event.CarRentalEvent.*;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 import hu.unideb.inf.carrental.ui.login.LoginView;
-import hu.unideb.inf.carrental.ui.overview.OverviewView;
+import hu.unideb.inf.carrental.ui.reservations.ReservationView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -52,9 +55,27 @@ public class CarRentalUI extends UI {
         setNavigator(navigator);
 
         if (SecurityUtils.isLoggedIn()) {
-            navigator.navigateTo(OverviewView.VIEW_NAME);
+            if (SecurityUtils.getLoggedInUser().getRole().equals(UserRole.ROLE_CUSTOMER)) {
+                navigator.navigateTo(CarSearchView.VIEW_NAME);
+            } else {
+                navigator.navigateTo(ReservationView.VIEW_NAME);
+            }
         } else {
             navigator.navigateTo(LoginView.VIEW_NAME);
+        }
+    }
+
+    @Subscribe
+    private void openReservationWindow(OpenReservationWindow openReservationWindow) {
+        try {
+            CarResponse carResponse = carService.getById(openReservationWindow.getCarID());
+            getCurrent().addWindow(new ReservationWindow(
+                    carResponse,
+                    siteService.getById(carResponse.getSiteId()),
+                    reservationService
+            ));
+        } catch (NotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -85,11 +106,12 @@ public class CarRentalUI extends UI {
     }
 
     @Autowired
-    public CarRentalUI(SpringViewProvider viewProvider, SiteService siteService, CarService carService, CarImageService carImageService) {
+    public CarRentalUI(SpringViewProvider viewProvider, SiteService siteService, CarService carService, CarImageService carImageService, ReservationService reservationService) {
         this.viewProvider = viewProvider;
         this.siteService = siteService;
         this.carService = carService;
         this.carImageService = carImageService;
+        this.reservationService = reservationService;
 
         this.carRentalEventBus = new CarRentalEventBus();
     }
@@ -99,6 +121,7 @@ public class CarRentalUI extends UI {
     private final SiteService siteService;
     private final CarService carService;
     private final CarImageService carImageService;
+    private final ReservationService reservationService;
 
     private final CarRentalEventBus carRentalEventBus;
 }

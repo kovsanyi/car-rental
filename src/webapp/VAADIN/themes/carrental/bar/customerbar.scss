@@ -1,0 +1,26 @@
+@mixin car-rental-customer-bar {
+  .customer-bar {
+    background: rgb(109, 89, 74) url("../img/customer-bar.png") no-repeat;
+    background-size: 100%;
+    border-bottom: 1px solid rgb(213, 213, 213);
+    padding: 10px;
+
+    .v-horizontallayout#content {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid rgb(213, 213, 213);
+    }
+
+    .v-label#logo {
+      margin: 0;
+      padding: 10px 4px;
+      color: white;
+      font-size: 80px;
+      font-weight: bold;
+      background-color: rgba(0, 0, 0, 0.80);
+      border: 1px solid rgba(0, 0, 0, 0.80);
+      border-radius: 5px;
+    }
+  }
+}

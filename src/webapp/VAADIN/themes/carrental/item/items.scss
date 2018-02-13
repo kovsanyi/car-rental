@@ -1,0 +1,7 @@
+@import "siteitem";
+@import "caritem";
+
+@mixin car-rental-items {
+  @include car-rental-site-item;
+  @include car-rental-car-item;
+}

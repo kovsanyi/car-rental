@@ -1,0 +1,27 @@
+@mixin car-rental-car-view {
+  .car-view {
+    #body {
+      padding: 12px;
+    }
+
+    .v-label#key, .v-label#value {
+      font-size: 1.5em;
+    }
+
+    .v-label#key {
+      font-weight: bold;
+      padding-right: 12px;
+    }
+
+    #image-container {
+      padding: 5px;
+      border: 1px solid rgb(213, 213, 213);
+      border-radius: 5px;
+      background-color: rgb(243, 243, 243);
+    }
+
+    div#gwt-uid-2{
+      display: none;
+    }
+  }
+}

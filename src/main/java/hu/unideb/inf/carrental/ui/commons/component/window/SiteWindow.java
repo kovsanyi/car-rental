@@ -2,7 +2,6 @@ package hu.unideb.inf.carrental.ui.commons.component.window;
 
 import com.vaadin.server.UserError;
 import com.vaadin.shared.Position;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.commons.constant.Constants;
@@ -14,7 +13,6 @@ import org.apache.commons.validator.EmailValidator;
 import java.util.HashMap;
 import java.util.Map;
 
-@UIScope
 public class SiteWindow extends Window {
 
     public SiteWindow(SiteService siteService) {
@@ -24,6 +22,7 @@ public class SiteWindow extends Window {
 
         setCaption("Add a site");
         setSizeUndefined();
+        addStyleName("site-window");
         setModal(true);
         setResizable(false);
         setDraggable(false);

@@ -8,7 +8,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.commons.component.item.SiteItem;
-import hu.unideb.inf.carrental.ui.commons.content.CarRentalContent;
+import hu.unideb.inf.carrental.ui.commons.content.root.CarRentalContent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 

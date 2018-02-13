@@ -1,13 +1,13 @@
 package hu.unideb.inf.carrental.ui.site.content;
 
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
-import hu.unideb.inf.carrental.ui.commons.content.CarRentalContent;
+import hu.unideb.inf.carrental.ui.commons.content.root.CarRentalContent;
 
-import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildKeyLabel;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildValueLabel;
 
 public class SiteContent extends CarRentalContent {
     public SiteContent(SiteResponse siteResponse) {
@@ -53,18 +53,6 @@ public class SiteContent extends CarRentalContent {
                 keyEmail, valueEmail
         );
         return details;
-    }
-
-    private Label buildKeyLabel(String text) {
-        final Label label = new Label(bold(text), ContentMode.HTML);
-        label.setId("key");
-        return label;
-    }
-
-    private Label buildValueLabel(String text) {
-        final Label label = new Label(text);
-        label.setId("value");
-        return label;
     }
 
     @Override

@@ -2,7 +2,6 @@ package hu.unideb.inf.carrental.ui.commons.component.window;
 
 import com.vaadin.server.UserError;
 import com.vaadin.shared.Position;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.car.resource.model.CreateCarRequest;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 //TODO fuel cons. validate
-@UIScope
 public class CarWindow extends Window {
 
     public CarWindow(SiteService siteService, CarService carService) {
@@ -32,6 +30,7 @@ public class CarWindow extends Window {
 
         setCaption("Add a car");
         setSizeUndefined();
+        addStyleName("car-window");
         setModal(true);
         setResizable(false);
         setDraggable(false);

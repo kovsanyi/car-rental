@@ -1,53 +1,29 @@
-package hu.unideb.inf.carrental.ui.car.content;
+package hu.unideb.inf.carrental.ui.commons.content.car;
 
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
-import com.vaadin.server.ThemeResource;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.car.resource.model.CarResponse;
 import hu.unideb.inf.carrental.carimage.resource.model.CarImageResponse;
-import hu.unideb.inf.carrental.ui.commons.content.CarRentalContent;
+import hu.unideb.inf.carrental.ui.commons.constant.Constants;
+import hu.unideb.inf.carrental.ui.commons.content.root.CarRentalContent;
 import org.tepi.imageviewer.ImageViewer;
 
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
 
-public class CarContent extends CarRentalContent {
+public abstract class CarContent extends CarRentalContent {
     public CarContent(CarResponse carResponse, List<CarImageResponse> carImageResponses) {
         super(String.format("Car - %s %s", carResponse.getBrand(), carResponse.getModel()));
         this.carResponse = carResponse;
         this.carImageResponses = carImageResponses;
 
-        setupHeader();
         setupBody();
-    }
-
-    private void setupHeader() {
-        final HorizontalLayout container = new HorizontalLayout();
-        container.setMargin(false);
-        container.setSpacing(true);
-        container.setSizeUndefined();
-
-        final Button viewSite = new Button("View site");
-        viewSite.setSizeUndefined();
-        viewSite.setIcon(VaadinIcons.LOCATION_ARROW);
-
-        final Button rentNow = new Button("Rent now!");
-        rentNow.setSizeUndefined();
-        rentNow.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        rentNow.setIcon(VaadinIcons.CAR);
-
-        container.addComponents(
-                viewSite,
-                rentNow
-        );
-
-        getHeader().addComponent(container);
-        getHeader().setComponentAlignment(container, Alignment.MIDDLE_RIGHT);
     }
 
     private void setupBody() {
@@ -61,8 +37,7 @@ public class CarContent extends CarRentalContent {
         final GridLayout details = new GridLayout(2, 8);
         details.setMargin(false);
         details.setSpacing(false);
-        details.setWidthUndefined();
-        details.setHeightUndefined();
+        details.setSizeUndefined();
 
         final Label keyCategory = buildKeyLabel("Category:");
         final Label keyBrand = buildKeyLabel("Brand:");
@@ -73,6 +48,7 @@ public class CarContent extends CarRentalContent {
         final Label keyFuelType = buildKeyLabel("Fuel type:");
         final Label keyFuelConsumption = buildKeyLabel("Fuel Consumption:");
         final Label keyTankCapacity = buildKeyLabel("Tank capacity:");
+        final Label keyPrice = buildKeyLabel("Price:");
 
         final Label valueCategory = buildValueLabel(carResponse.getCategory().toString());
         final Label valueBrand = buildValueLabel(carResponse.getBrand());
@@ -83,6 +59,7 @@ public class CarContent extends CarRentalContent {
         final Label valueFuelType = buildValueLabel(carResponse.getFuelType().toString());
         final Label valueFuelConsumption = buildValueLabel(carResponse.getFuelConsumption().toString() + " liter/100km");
         final Label valueTankCapacity = buildValueLabel(carResponse.getTankCapacity().toString() + " liter");
+        final Label valuePrice = buildValueLabel(String.format("%s %s%s", carResponse.getPrice().toString(), Constants.CURRENCY, "/day"));
 
         details.addComponents(
                 keyCategory, valueCategory,
@@ -93,27 +70,37 @@ public class CarContent extends CarRentalContent {
                 keyTrunkCapacity, valueTrunkCapacity,
                 keyFuelType, valueFuelType,
                 keyFuelConsumption, valueFuelConsumption,
-                keyTankCapacity, valueTankCapacity
+                keyTankCapacity, valueTankCapacity,
+                keyPrice, valuePrice
         );
         return details;
     }
 
     private VerticalLayout buildImageViewer() {
         final VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
+        layout.setSpacing(false);
         layout.setSizeFull();
+        layout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
+        layout.setId("image-container");
 
         final ImageViewer imageViewer = new ImageViewer();
-        imageViewer.setWidth(600.f, Unit.PIXELS);
-        imageViewer.setHeight(600.f, Unit.PIXELS);
+        imageViewer.setSizeFull();
         imageViewer.setAnimationEnabled(false);
         imageViewer.setSideImageRelativeWidth(0.7f);
+        imageViewer.setHeight(358.f, Unit.PIXELS);
 
-        List<Resource> resources = new ArrayList<>();
-        resources.add(new ThemeResource("img/home-background.jpeg"));
-        resources.add(new ThemeResource("img/login-background.jpeg"));
+        //TODO file name must be added!
+        List<Resource> resources = carImageResponses.stream()
+                .map(CarImageResponse::getData)
+                .map(e -> Base64.getDecoder().decode(e))
+                .map(e -> new StreamResource((StreamResource.StreamSource) () -> new ByteArrayInputStream(e), String.valueOf(e.length)))
+                .collect(Collectors.toList());
+
         imageViewer.setImages(resources);
-        imageViewer.setHiLiteEnabled(true);
+
         layout.addComponent(imageViewer);
+        layout.setExpandRatio(imageViewer, 0.8f);
         return layout;
     }
 
@@ -127,6 +114,10 @@ public class CarContent extends CarRentalContent {
         final Label label = new Label(text);
         label.setId("value");
         return label;
+    }
+
+    protected CarResponse getCarResponse() {
+        return carResponse;
     }
 
     @Override

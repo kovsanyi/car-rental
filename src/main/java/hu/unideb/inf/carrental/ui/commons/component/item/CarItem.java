@@ -14,7 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.util.Base64;
 import java.util.Objects;
 
-import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildKeyLabel;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildValueLabel;
 
 public final class CarItem extends Panel {
     public CarItem(CarResponse carResponse, CarImageResponse carImageResponse) {
@@ -24,7 +25,7 @@ public final class CarItem extends Panel {
         setWidth(100.f, Unit.PERCENTAGE);
         setHeightUndefined();
         setCaption(carResponse.getBrand() + " " + carResponse.getModel());
-        addStyleName("caritem");
+        addStyleName("car-item");
 
         setContent(buildContent());
     }
@@ -54,12 +55,14 @@ public final class CarItem extends Panel {
         imageContainer.setMargin(false);
         imageContainer.setSpacing(false);
         imageContainer.setSizeFull();
-        imageContainer.setId("imagecontainer");
+        imageContainer.setId("image-container");
 
-        if (!Objects.isNull(carImageResponse)) {
+        if (Objects.nonNull(carImageResponse)) {
             final Image image = new Image();
             image.setSource(
-                    new StreamResource((StreamResource.StreamSource) () -> new ByteArrayInputStream(Base64.getDecoder().decode(carImageResponse.getData())), ""));
+                    new StreamResource((StreamResource.StreamSource) () ->
+                            new ByteArrayInputStream(Base64.getDecoder().decode(carImageResponse.getData())),
+                            carResponse.getId().toString()));
             image.setWidth(100.f, Unit.PERCENTAGE);
             image.setHeightUndefined();
 
@@ -125,10 +128,12 @@ public final class CarItem extends Panel {
         priceLayout.setWidth(100.f, Unit.PERCENTAGE);
         priceLayout.setHeight(100.f, Unit.PERCENTAGE);
         priceLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-        priceLayout.setId("pricecontent");
+        priceLayout.setId("price-content");
 
         final Label price = new Label(
-                carResponse.getPrice().toString() + " HUF<sub>/day</sub>",
+                String.format("%s %s<sub>/day</sub>",
+                        carResponse.getPrice().toString(),
+                        hu.unideb.inf.carrental.ui.commons.constant.Constants.CURRENCY),
                 ContentMode.HTML);
         price.addStyleName(ValoTheme.LABEL_H3);
         price.addStyleName(ValoTheme.LABEL_NO_MARGIN);
@@ -144,21 +149,10 @@ public final class CarItem extends Panel {
         button.setIcon(VaadinIcons.CAR);
         button.addStyleName(ValoTheme.BUTTON_FRIENDLY);
         button.addClickListener(e ->
-                CarRentalUI.getCurrent().getPage().open("/#!" + CarView.VIEW_NAME + "/id=" + carResponse.getId(), "")
+                CarRentalUI.getCurrent().getPage()
+                        .open("/#!" + CarView.VIEW_NAME + "/id=" + carResponse.getId(), "")
         );
         return button;
-    }
-
-    private Label buildKeyLabel(String text) {
-        final Label label = new Label(bold(text), ContentMode.HTML);
-        label.setId("key");
-        return label;
-    }
-
-    private Label buildValueLabel(String text) {
-        final Label label = new Label(text);
-        label.setId("value");
-        return label;
     }
 
     private final CarResponse carResponse;

@@ -6,7 +6,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.statistics.service.StatisticsService;
 import hu.unideb.inf.carrental.ui.commons.component.chart.IncomeByBrandPieChart;
 import hu.unideb.inf.carrental.ui.commons.constant.Constants;
-import hu.unideb.inf.carrental.ui.commons.content.CarRentalContent;
+import hu.unideb.inf.carrental.ui.commons.content.root.CarRentalContent;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -16,8 +16,8 @@ public class CompanyStatisticsContent extends CarRentalContent {
     public CompanyStatisticsContent(StatisticsService statisticsService) {
         super("Statistics");
         this.statisticsService = statisticsService;
-
         pieChart = new IncomeByBrandPieChart();
+
         setupBody();
     }
 

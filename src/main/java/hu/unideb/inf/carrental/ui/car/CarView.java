@@ -2,7 +2,6 @@ package hu.unideb.inf.carrental.ui.car;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
@@ -11,10 +10,15 @@ import hu.unideb.inf.carrental.car.resource.model.CarResponse;
 import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.carimage.service.CarImageService;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
-import hu.unideb.inf.carrental.ui.car.content.CarContent;
+import hu.unideb.inf.carrental.commons.security.SecurityUtils;
+import hu.unideb.inf.carrental.ui.car.content.CompanyCarContent;
+import hu.unideb.inf.carrental.ui.car.content.CustomerCarContent;
+import hu.unideb.inf.carrental.ui.commons.bar.CustomerBar;
+import hu.unideb.inf.carrental.ui.commons.bar.CompanyBar;
 import hu.unideb.inf.carrental.ui.commons.menu.CarRentalMenu;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.Objects;
 
 @UIScope
@@ -25,12 +29,12 @@ public class CarView extends VerticalLayout implements View {
         this.carService = carService;
         this.carImageService = carImageService;
 
-        setMargin(new MarginInfo(true, false, false, false));
+        setMargin(false);
         setSpacing(true);
         setWidth(100.f, Unit.PERCENTAGE);
         setHeightUndefined();
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
-        setStyleName("carview");
+        setStyleName("car-view");
     }
 
     @Override
@@ -41,20 +45,34 @@ public class CarView extends VerticalLayout implements View {
             try {
                 Long carID = Long.parseLong(event.getParameterMap().get("id"));
                 CarResponse carResponse = carService.getById(carID);
-                carContent = new CarContent(carResponse, Collections.singletonList(carImageService.getById(1)));
-
-                addComponent(new CarRentalMenu());
-                addComponent(carContent);
+                switch (SecurityUtils.getLoggedInUser().getRole()) {
+                    case ROLE_COMPANY:
+                        addComponent(new CompanyBar());
+                        addComponent(new CarRentalMenu());
+                        addComponent(new CompanyCarContent(carResponse, carImageService.getAllByCarId(carID),
+                                carService, carImageService));
+                        break;
+                    case ROLE_CUSTOMER:
+                        addComponent(new CustomerBar(carService));
+                        addComponent(new CarRentalMenu());
+                        addComponent(new CustomerCarContent(carResponse, carImageService.getAllByCarId(carID)));
+                        break;
+                    case ROLE_MANAGER:
+                        addComponent(new CompanyBar());
+                        addComponent(new CarRentalMenu());
+                        addComponent(new CompanyCarContent(carResponse, carImageService.getAllByCarId(carID),
+                                carService, carImageService));
+                        break;
+                }
             } catch (NotFoundException | NumberFormatException e) {
-                e.printStackTrace();
+                LOGGER.warn("Invalid ID in URI, message: {}", e.getMessage());
             }
         }
     }
-
-    private CarContent carContent;
 
     private final CarService carService;
     private final CarImageService carImageService;
 
     public static final String VIEW_NAME = "car";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarView.class);
 }

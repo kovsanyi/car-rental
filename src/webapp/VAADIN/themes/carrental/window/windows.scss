@@ -1,0 +1,9 @@
+@import "sitewindow";
+@import "carwindow";
+@import "reservationwindow";
+
+@mixin car-rental-windows {
+  @include car-rental-site-window;
+  @include car-rental-car-window;
+  @include car-rental-reservation-window;
+}

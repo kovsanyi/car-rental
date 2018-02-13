@@ -4,6 +4,18 @@ import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
 
 public abstract class CarRentalEvent {
 
+    public static class OpenReservationWindow {
+        private final long carID;
+
+        public OpenReservationWindow(long carID) {
+            this.carID = carID;
+        }
+
+        public long getCarID() {
+            return carID;
+        }
+    }
+
     public static class OpenSiteWindowForAddingEvent {
     }
 

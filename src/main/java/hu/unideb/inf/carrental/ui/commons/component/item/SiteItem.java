@@ -1,7 +1,6 @@
 package hu.unideb.inf.carrental.ui.commons.component.item;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
@@ -10,7 +9,8 @@ import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 import hu.unideb.inf.carrental.ui.site.SiteView;
 
-import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildKeyLabel;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildValueLabel;
 
 public final class SiteItem extends Panel {
 
@@ -20,7 +20,7 @@ public final class SiteItem extends Panel {
         setWidth(100.f, Unit.PERCENTAGE);
         setHeightUndefined();
         setCaption(siteResponse.getZipCode() + " " + siteResponse.getCity());
-        addStyleName("siteitem");
+        addStyleName("site-item");
 
         setContent(buildContent());
     }
@@ -84,7 +84,8 @@ public final class SiteItem extends Panel {
         details.setIcon(VaadinIcons.INFO_CIRCLE_O);
         details.setStyleName(ValoTheme.BUTTON_FRIENDLY);
         details.addClickListener(e ->
-                CarRentalUI.getCurrent().getPage().open("/#!" + SiteView.VIEW_NAME + "/id=" + siteResponse.getId(), "")
+                CarRentalUI.getCurrent().getPage()
+                        .open("/#!" + SiteView.VIEW_NAME + "/id=" + siteResponse.getId(), "")
         );
         return details;
     }
@@ -97,18 +98,6 @@ public final class SiteItem extends Panel {
                 CarRentalEventBus.post(new CarRentalEvent.OpenSiteWindowForEditingEvent(siteResponse))
         );
         return edit;
-    }
-
-    private Label buildKeyLabel(String text) {
-        final Label label = new Label(bold(text), ContentMode.HTML);
-        label.setId("key");
-        return label;
-    }
-
-    private Label buildValueLabel(String text) {
-        final Label label = new Label(text);
-        label.setId("value");
-        return label;
     }
 
     private final SiteResponse siteResponse;

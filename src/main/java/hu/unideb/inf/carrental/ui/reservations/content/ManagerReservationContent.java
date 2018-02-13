@@ -7,14 +7,17 @@ import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
 import hu.unideb.inf.carrental.reservation.resource.model.ReservationResponse;
 import hu.unideb.inf.carrental.reservation.service.ReservationService;
+import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.commons.content.reservation.ReservationContent;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 
 import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
 
-public class CompanyReservationsContent extends ReservationContent {
-    public CompanyReservationsContent(ReservationService reservationService) {
+public class ManagerReservationContent extends ReservationContent {
+
+    public ManagerReservationContent(ReservationService reservationService, SiteService siteService) {
         this.reservationService = reservationService;
+        this.siteService = siteService;
 
         setupHeader();
         setupBody();
@@ -31,24 +34,29 @@ public class CompanyReservationsContent extends ReservationContent {
         accordion.setSizeFull();
         accordion.setTabCaptionsAsHtml(true);
 
-        Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getActiveByCompany());
-        activeReservations.addSelectionListener(e -> {
-            if (!activeReservations.getSelectedItems().isEmpty()) {
-                markAsClosed.setEnabled(true);
-                activeReservations.getSelectedItems().stream()
-                        .findFirst()
-                        .ifPresent(reservationResponse -> selectedItem = reservationResponse);
-            } else {
-                markAsClosed.setEnabled(false);
-            }
-        });
+        try {
+            Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getAllBySiteId(
+                    siteService.getByManager().getId()));
+            activeReservations.addSelectionListener(e -> {
+                if (!activeReservations.getSelectedItems().isEmpty()) {
+                    markAsClosed.setEnabled(true);
+                    activeReservations.getSelectedItems().stream()
+                            .findFirst()
+                            .ifPresent(reservationResponse -> selectedItem = reservationResponse);
+                } else {
+                    markAsClosed.setEnabled(false);
+                }
+            });
 
-        accordion.addTab(activeReservations,
-                String.format("%s - %s", "Reservations", bold("Active")));
-        accordion.addTab(buildGrid(reservationService.getClosedByCompany()),
-                String.format("%s - %s", "Reservations", bold("Closed")));
-        accordion.addTab(buildGrid(reservationService.getAllByCompany()),
-                String.format("%s - %s", "Reservations", bold("All")));
+            accordion.addTab(activeReservations,
+                    String.format("%s - %s", "Reservations", bold("Active")));
+            accordion.addTab(buildGrid(reservationService.getClosedBySiteId(siteService.getByManager().getId())),
+                    String.format("%s - %s", "Reservations", bold("Closed")));
+            accordion.addTab(buildGrid(reservationService.getAllBySiteId(siteService.getByManager().getId())),
+                    String.format("%s - %s", "Reservations", bold("All")));
+        } catch (NotFoundException | UnauthorizedAccessException e) {
+            e.printStackTrace();
+        }
 
         getBody().addComponent(accordion);
     }
@@ -91,4 +99,5 @@ public class CompanyReservationsContent extends ReservationContent {
     private Button markAsClosed;
 
     private final ReservationService reservationService;
+    private final SiteService siteService;
 }

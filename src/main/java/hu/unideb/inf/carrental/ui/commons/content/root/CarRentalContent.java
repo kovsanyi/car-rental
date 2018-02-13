@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.commons.content;
+package hu.unideb.inf.carrental.ui.commons.content.root;
 
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.HorizontalLayout;

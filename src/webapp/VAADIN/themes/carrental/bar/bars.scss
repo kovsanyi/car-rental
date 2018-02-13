@@ -1,0 +1,7 @@
+@import "companybar";
+@import "customerbar";
+
+@mixin car-rental-bars{
+  @include car-rental-company-bar;
+  @include car-rental-customer-bar;
+}

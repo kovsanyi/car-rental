@@ -1,20 +1,13 @@
 @import "../commons";
 
-@mixin carrental-cars-view {
-
-  .carsview {
-
+@mixin car-rental-cars-view {
+  .cars-view {
     .v-gridlayout#body {
       padding: 12px;
     }
 
     .v-panel {
       @include animation(valo-animate-out-face 800ms 10ms backwards, valo-animate-in-fade 600ms 100ms backwards);
-    }
-
-    .v-panel:hover {
-      transition: none;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
     }
   }
 }
