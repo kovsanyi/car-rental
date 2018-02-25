@@ -53,7 +53,8 @@ public class CreateManagerRequest {
     public CreateManagerRequest() {
     }
 
-    public CreateManagerRequest(String userUsername, String userPassword, String userEmail, String fullName, String phoneNumber, Integer zipCode, String city, String address) {
+    public CreateManagerRequest(String userUsername, String userPassword, String userEmail, String fullName,
+                                String phoneNumber, Integer zipCode, String city, String address) {
         this.userUsername = userUsername;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
@@ -126,5 +127,49 @@ public class CreateManagerRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CreateManagerRequest that = (CreateManagerRequest) o;
+
+        if (!userUsername.equals(that.userUsername)) return false;
+        if (!userPassword.equals(that.userPassword)) return false;
+        if (!userEmail.equals(that.userEmail)) return false;
+        if (!fullName.equals(that.fullName)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        return address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userUsername.hashCode();
+        result = 31 * result + userPassword.hashCode();
+        result = 31 * result + userEmail.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateManagerRequest{" +
+                "userUsername='" + userUsername + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DeleteCompany {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteCompany.class);
@@ -32,6 +34,7 @@ public class DeleteCompany {
         this.deleteReservation = deleteReservation;
     }
 
+    @Transactional
     public void delete(Company company) throws CollisionException, CarInRentException {
         LOGGER.trace("Deleting company ID {}", company.getId());
         if (!siteRepository.findByCompany(company).isEmpty()) {

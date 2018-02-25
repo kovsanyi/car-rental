@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DeleteManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteManager.class);
@@ -26,6 +28,7 @@ public class DeleteManager {
         this.deleteUser = deleteUser;
     }
 
+    @Transactional
     public void delete(Manager manager) {
         LOGGER.trace("Deleting manager ID {}", manager.getId());
         if (siteRepository.findByManager(manager).isPresent()) {

@@ -93,7 +93,7 @@ public class CustomerBar extends VerticalLayout {
     private NativeSelect<String> buildCategory() {
         List<String> categoryData = new ArrayList<>();
         categoryData.add(SELECT_ALL);
-        carService.getUsedCarCategories().forEach(e -> categoryData.add((String) e));
+        carService.getUsedCarCategories().forEach(e -> categoryData.add(e.toString()));
 
         NativeSelect<String> category = new NativeSelect<>("Category", categoryData);
         category.setWidth(150, Sizeable.Unit.PIXELS);

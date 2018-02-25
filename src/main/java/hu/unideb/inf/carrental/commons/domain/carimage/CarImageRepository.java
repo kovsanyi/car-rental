@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CarImageRepository extends CrudRepository<CarImage, Long> {
-    Optional<CarImage> findById(Long id);
+    Optional<CarImage> findById(long id);
 
     List<CarImage> findByCar(Car car);
 
-    List<CarImage> findByCarId(Long id);
+    List<CarImage> findByCarId(long id);
 
-    List<CarImage> deleteByCar(Car car);
+    void deleteByCar(Car car);
 }

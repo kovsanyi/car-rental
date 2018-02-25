@@ -36,14 +36,14 @@ public class CreateCompanyRequest {
     private String email;
 
     @NotBlank
-    @Length(min = Constants.User.PHONE_MIN_LENGTH,
-            max = Constants.User.PHONE_MAX_LENGTH)
-    private String phoneNumber;
-
-    @NotBlank
     @Length(min = Constants.User.FULL_NAME_MIN_LENGTH,
             max = Constants.User.FULL_NAME_MAX_LENGTH)
     private String fullName;
+
+    @NotBlank
+    @Length(min = Constants.User.PHONE_MIN_LENGTH,
+            max = Constants.User.PHONE_MAX_LENGTH)
+    private String phoneNumber;
 
     @NotNull
     @Min(Constants.User.ZIP_CODE_MIN_VALUE)
@@ -64,14 +64,14 @@ public class CreateCompanyRequest {
     }
 
     public CreateCompanyRequest(String userUsername, String userPassword, String userEmail, String name, String email,
-                                String phoneNumber, String fullName, Integer zipCode, String city, String address) {
+                                String fullName, String phoneNumber, Integer zipCode, String city, String address) {
         this.userUsername = userUsername;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
         this.name = name;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
         this.zipCode = zipCode;
         this.city = city;
         this.address = address;
@@ -155,5 +155,55 @@ public class CreateCompanyRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CreateCompanyRequest that = (CreateCompanyRequest) o;
+
+        if (!userUsername.equals(that.userUsername)) return false;
+        if (!userPassword.equals(that.userPassword)) return false;
+        if (!userEmail.equals(that.userEmail)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!email.equals(that.email)) return false;
+        if (!fullName.equals(that.fullName)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        return address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userUsername.hashCode();
+        result = 31 * result + userPassword.hashCode();
+        result = 31 * result + userEmail.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CreateCompanyRequest{" +
+                "userUsername='" + userUsername + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

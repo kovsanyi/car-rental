@@ -9,8 +9,5 @@ public enum CarCategory {
     Luxury,
     Minivan,
     Convertible,
-    SUV,
-
-    //TODO for debug
-    Crossover
+    SUV
 }

@@ -8,8 +8,8 @@ public class CompanyResponse {
     private String userRole;
     private String name;
     private String email;
-    private String phoneNumber;
     private String fullName;
+    private String phoneNumber;
     private Integer zipCode;
     private String city;
     private String address;
@@ -18,7 +18,7 @@ public class CompanyResponse {
     }
 
     public CompanyResponse(Long id, Long userId, String userUsername, String userEmail, String userRole, String name,
-                           String email, String phoneNumber, String fullName, Integer zipCode, String city, String address) {
+                           String email, String fullName, String phoneNumber, Integer zipCode, String city, String address) {
         this.id = id;
         this.userId = userId;
         this.userUsername = userUsername;
@@ -26,8 +26,8 @@ public class CompanyResponse {
         this.userRole = userRole;
         this.name = name;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
         this.zipCode = zipCode;
         this.city = city;
         this.address = address;
@@ -89,20 +89,20 @@ public class CompanyResponse {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getFullName() {
         return fullName;
     }
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Integer getZipCode() {
@@ -127,5 +127,61 @@ public class CompanyResponse {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompanyResponse that = (CompanyResponse) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!userId.equals(that.userId)) return false;
+        if (!userUsername.equals(that.userUsername)) return false;
+        if (!userEmail.equals(that.userEmail)) return false;
+        if (!userRole.equals(that.userRole)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!email.equals(that.email)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!fullName.equals(that.fullName)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        return address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + userUsername.hashCode();
+        result = 31 * result + userEmail.hashCode();
+        result = 31 * result + userRole.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CompanyResponse{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", userUsername='" + userUsername + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userRole='" + userRole + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

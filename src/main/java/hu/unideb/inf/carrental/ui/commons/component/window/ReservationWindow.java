@@ -4,6 +4,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.car.resource.model.CarResponse;
 import hu.unideb.inf.carrental.commons.exception.CarInRentException;
+import hu.unideb.inf.carrental.commons.exception.InvalidInputException;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
 import hu.unideb.inf.carrental.reservation.resource.model.CreateReservationRequest;
@@ -160,6 +161,9 @@ public class ReservationWindow extends Window {
                     Notification.Type.WARNING_MESSAGE);
         } catch (ReservationCollisionException e) {
             UIUtils.showNotification("The car has already been rented for that period",
+                    Notification.Type.WARNING_MESSAGE);
+        } catch (InvalidInputException e) {
+            UIUtils.showNotification(e.getMessage(),
                     Notification.Type.WARNING_MESSAGE);
         }
     }

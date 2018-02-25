@@ -88,4 +88,11 @@ public class ExceptionHandlerResource {
     public ErrorResponse handleCollision(CollisionException e) {
         return new ErrorResponse(ExceptionType.COLLISION, e.getMessage());
     }
+
+    @ExceptionHandler(InvalidInputException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ErrorResponse handleInvalidInput(InvalidInputException e) {
+        return new ErrorResponse(ExceptionType.ILLEGAL_ARGUMENT, e.getMessage());
+    }
 }

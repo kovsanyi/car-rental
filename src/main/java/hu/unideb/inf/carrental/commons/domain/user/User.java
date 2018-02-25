@@ -1,8 +1,10 @@
 package hu.unideb.inf.carrental.commons.domain.user;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,6 +22,17 @@ public class User implements UserDetails {
     private String email;
     private UserRole role;
 
+    public User() {
+    }
+
+    public User(Long id, String username, String password, String email, UserRole role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
     @Id
     @GeneratedValue
     public Long getId() {
@@ -31,8 +44,10 @@ public class User implements UserDetails {
     }
 
     @Override
-    @NotEmpty
-    @Column(nullable = false, unique = true, length = 45)
+    @NotBlank
+    @Length(min = Constants.User.USERNAME_MIN_LENGTH,
+            max = Constants.User.USERNAME_MAX_LENGTH)
+    @Column(nullable = false, unique = true)
     public String getUsername() {
         return username;
     }
@@ -42,7 +57,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false, length = 60)
     public String getPassword() {
         return password;
@@ -53,7 +68,8 @@ public class User implements UserDetails {
     }
 
     @Email
-    @Column(unique = true, length = 45)
+    @Length(max = Constants.User.EMAIL_MAX_LENGTH)
+    @Column(unique = true)
     public String getEmail() {
         return email;
     }

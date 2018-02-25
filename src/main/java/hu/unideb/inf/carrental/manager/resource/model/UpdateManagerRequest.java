@@ -84,4 +84,39 @@ public class UpdateManagerRequest {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UpdateManagerRequest that = (UpdateManagerRequest) o;
+
+        if (!fullName.equals(that.fullName)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        return address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fullName.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateManagerRequest{" +
+                "fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

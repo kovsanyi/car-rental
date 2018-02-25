@@ -5,6 +5,7 @@ import hu.unideb.inf.carrental.commons.domain.customer.CustomerRepository;
 import hu.unideb.inf.carrental.commons.domain.reservation.Reservation;
 import hu.unideb.inf.carrental.commons.domain.reservation.ReservationRepository;
 import hu.unideb.inf.carrental.commons.exception.CarInRentException;
+import hu.unideb.inf.carrental.commons.exception.InvalidInputException;
 import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
@@ -26,20 +27,25 @@ public class ReservationValidator {
     private final SiteValidator siteValidator;
 
     @Autowired
-    public ReservationValidator(ReservationRepository reservationRepository, CustomerRepository customerRepository, SiteValidator siteValidator) {
+    public ReservationValidator(ReservationRepository reservationRepository, CustomerRepository customerRepository,
+                                SiteValidator siteValidator) {
         this.reservationRepository = reservationRepository;
         this.customerRepository = customerRepository;
         this.siteValidator = siteValidator;
     }
 
-    public void validate(Reservation reservation) throws CarInRentException, ReservationCollisionException {
+    public void validate(Reservation reservation)
+            throws CarInRentException, ReservationCollisionException, InvalidInputException {
         logger.info("Validating reservation");
         if (reservationRepository.findByCustomerAndReturnedDateIsNull(
                 customerRepository.findByUser(SecurityUtils.getLoggedInUser()).get()).isPresent()) {
             throw new ReservationCollisionException(Constants.CUSTOMER_HAS_RESERVATION);
         }
+        if (reservation.getReceiveDate().isBefore(LocalDate.now())) {
+            throw new InvalidInputException(Constants.INVALID_DATE);
+        }
         if (reservation.getReceiveDate().isAfter(reservation.getPlannedReturnDate())) {
-            throw new IllegalArgumentException(Constants.INVALID_DATE);
+            throw new InvalidInputException(Constants.INVALID_DATE);
         }
         Optional<Reservation> previousReservation = reservationRepository.findByCarAndReturnedDateIsNull(reservation.getCar());
         if (previousReservation.isPresent()) {

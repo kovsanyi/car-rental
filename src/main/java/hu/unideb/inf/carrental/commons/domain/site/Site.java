@@ -1,11 +1,16 @@
 package hu.unideb.inf.carrental.commons.domain.site;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.company.Company;
 import hu.unideb.inf.carrental.commons.domain.manager.Manager;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Site {
@@ -19,6 +24,22 @@ public class Site {
     private String address;
     private String openingHours;
 
+    public Site() {
+    }
+
+    public Site(Long id, Company company, Manager manager, String email, String phoneNumber, Integer zipCode,
+                String city, String address, String openingHours) {
+        this.id = id;
+        this.company = company;
+        this.manager = manager;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.address = address;
+        this.openingHours = openingHours;
+    }
+
     @Id
     @GeneratedValue
     public Long getId() {
@@ -29,8 +50,8 @@ public class Site {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @NotNull
+    @ManyToOne
     public Company getCompany() {
         return company;
     }
@@ -39,7 +60,7 @@ public class Site {
         this.company = company;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     public Manager getManager() {
         return manager;
     }
@@ -48,8 +69,9 @@ public class Site {
         this.manager = manager;
     }
 
+    @NotBlank
     @Email
-    @Column(nullable = false)
+    @Length(max = Constants.Site.EMAIL_MAX_LENGTH)
     public String getEmail() {
         return email;
     }
@@ -58,8 +80,9 @@ public class Site {
         this.email = email;
     }
 
-    @NotEmpty
-    @Column(nullable = false)
+    @NotBlank
+    @Length(min = Constants.Site.PHONE_MIN_LENGTH,
+            max = Constants.Site.PHONE_MAX_LENGTH)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -68,7 +91,9 @@ public class Site {
         this.phoneNumber = phoneNumber;
     }
 
-    @Column(nullable = false)
+    @NotNull
+    @Min(Constants.Site.ZIP_CODE_MIN_VALUE)
+    @Max(Constants.Site.ZIP_CODE_MAX_VALUE)
     public Integer getZipCode() {
         return zipCode;
     }
@@ -77,8 +102,9 @@ public class Site {
         this.zipCode = zipCode;
     }
 
-    @NotEmpty
-    @Column(nullable = false)
+    @NotBlank
+    @Length(min = Constants.Site.CITY_MIN_LENGTH,
+            max = Constants.Site.CITY_MAX_LENGTH)
     public String getCity() {
         return city;
     }
@@ -87,8 +113,9 @@ public class Site {
         this.city = city;
     }
 
-    @NotEmpty
-    @Column(nullable = false)
+    @NotBlank
+    @Length(min = Constants.Site.ADDRESS_MIN_LENGTH,
+            max = Constants.Site.ADDRESS_MAX_LENGTH)
     public String getAddress() {
         return address;
     }
@@ -97,8 +124,9 @@ public class Site {
         this.address = address;
     }
 
-    @NotEmpty
-    @Column(nullable = false)
+    @NotBlank
+    @Length(min = Constants.Site.OPENING_HOURS_MIN_LENGTH,
+            max = Constants.Site.OPENING_HOURS_MAX_LENGTH)
     public String getOpeningHours() {
         return openingHours;
     }
@@ -133,5 +161,20 @@ public class Site {
         result = 31 * result + address.hashCode();
         result = 31 * result + openingHours.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Site{" +
+                "id=" + id +
+                ", companyID=" + company.getId() +
+                ", managerID=" + manager.getAddress() +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                ", openingHours='" + openingHours + '\'' +
+                '}';
     }
 }

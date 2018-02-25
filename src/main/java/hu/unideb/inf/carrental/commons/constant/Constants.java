@@ -6,6 +6,8 @@ public final class Constants {
     public final static String PATH_MANAGER = "/api/manager";
     public final static String PATH_CUSTOMER = "/api/customer";
     public final static String PATH_COMPANY = "/api/company";
+    public final static String PATH_CAR = "/api/car";
+    public final static String PATH_SITE = "/api/site";
 
     //User
     public final static String USER_NOT_FOUND = "User not found";
@@ -64,6 +66,10 @@ public final class Constants {
         int PRICE_MAX_VALUE = 500000;
     }
 
+    public interface CarImage {
+        int MAX_SIZE = 2000000;
+    }
+
     public interface Site {
         int ZIP_CODE_MIN_VALUE = 1000;
         int ZIP_CODE_MAX_VALUE = 10000;
@@ -80,9 +86,9 @@ public final class Constants {
 
     public interface User {
         int USERNAME_MIN_LENGTH = 5;
-        int USERNAME_MAX_LENGTH = 20;
+        int USERNAME_MAX_LENGTH = 30;
         int PASSWORD_MIN_LENGTH = 6;
-        int PASSWORD_MAX_LENGTH = 20;
+        int PASSWORD_MAX_LENGTH = 30;
         int EMAIL_MAX_LENGTH = 50;
         int FULL_NAME_MIN_LENGTH = 5;
         int FULL_NAME_MAX_LENGTH = 30;

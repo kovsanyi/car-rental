@@ -3,6 +3,7 @@ package hu.unideb.inf.carrental.ui.cars.content;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.car.resource.model.CarResponse;
 import hu.unideb.inf.carrental.car.service.CarService;
@@ -12,6 +13,7 @@ import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.company.service.CompanyService;
 import hu.unideb.inf.carrental.ui.commons.component.item.CarItem;
 import hu.unideb.inf.carrental.ui.commons.content.car.CarsContent;
+import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 
@@ -44,13 +46,17 @@ public class CompanyCarsContent extends CarsContent {
         Map<CarResponse, CarImageResponse> carWithCover = new HashMap<>();
         CarImageResponse carImageResponse;
 
-        for (CarResponse carResponse : carService.getByCompanyId(companyService.get().getId())) {
-            try {
-                carImageResponse = carImageService.getCoverByCarId(carResponse.getId());
-            } catch (NotFoundException e) {
-                carImageResponse = null;
+        try {
+            for (CarResponse carResponse : carService.getByCompanyId(companyService.get().getId())) {
+                try {
+                    carImageResponse = carImageService.getCoverByCarId(carResponse.getId());
+                } catch (NotFoundException e) {
+                    carImageResponse = null;
+                }
+                carWithCover.put(carResponse, carImageResponse);
             }
-            carWithCover.put(carResponse, carImageResponse);
+        } catch (NotFoundException e) {
+            UIUtils.showNotification(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
 
         carWithCover.entrySet().stream()

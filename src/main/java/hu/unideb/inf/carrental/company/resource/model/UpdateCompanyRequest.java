@@ -21,14 +21,14 @@ public class UpdateCompanyRequest {
     private String email;
 
     @NotBlank
-    @Length(min = Constants.User.PHONE_MIN_LENGTH,
-            max = Constants.User.PHONE_MAX_LENGTH)
-    private String phoneNumber;
-
-    @NotBlank
     @Length(min = Constants.User.FULL_NAME_MIN_LENGTH,
             max = Constants.User.FULL_NAME_MAX_LENGTH)
     private String fullName;
+
+    @NotBlank
+    @Length(min = Constants.User.PHONE_MIN_LENGTH,
+            max = Constants.User.PHONE_MAX_LENGTH)
+    private String phoneNumber;
 
     @NotNull
     @Min(Constants.User.ZIP_CODE_MIN_VALUE)
@@ -48,12 +48,12 @@ public class UpdateCompanyRequest {
     public UpdateCompanyRequest() {
     }
 
-    public UpdateCompanyRequest(String name, String email, String phoneNumber, String fullName,
+    public UpdateCompanyRequest(String name, String email, String fullName, String phoneNumber,
                                 Integer zipCode, String city, String address) {
         this.name = name;
         this.email = email;
-        this.phoneNumber = phoneNumber;
         this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
         this.zipCode = zipCode;
         this.city = city;
         this.address = address;
@@ -75,20 +75,20 @@ public class UpdateCompanyRequest {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getFullName() {
         return fullName;
     }
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public Integer getZipCode() {
@@ -113,5 +113,46 @@ public class UpdateCompanyRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UpdateCompanyRequest that = (UpdateCompanyRequest) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!email.equals(that.email)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!fullName.equals(that.fullName)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        return address.equals(that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateCompanyRequest{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }

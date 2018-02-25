@@ -16,36 +16,32 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static hu.unideb.inf.carrental.commons.constant.Constants.PATH_SITE;
+
 @RestController
-@RequestMapping("/api/site")
+@RequestMapping(PATH_SITE)
 public class SiteResource {
-    private final SiteService siteService;
 
-    @Autowired
-    public SiteResource(SiteService siteService) {
-        this.siteService = siteService;
-    }
-
-    @PostMapping("/save")
+    @PostMapping(SAVE)
     public ResponseEntity<?> save(@Valid @RequestBody CreateSiteRequest createSiteRequest) throws NotFoundException {
         return new ResponseEntity<>(new CreatedResponse(siteService.save(createSiteRequest)), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
+    @PutMapping(UPDATE)
     public ResponseEntity<?> update(@Valid @RequestBody UpdateSiteRequest updateSiteRequest)
             throws NotFoundException, UnauthorizedAccessException {
         siteService.update(updateSiteRequest);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(DELETE)
     public ResponseEntity<?> delete(@PathVariable("id") long id)
             throws NotFoundException, UnauthorizedAccessException, CollisionException {
         siteService.delete(id);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{siteId}/setManager/id/{id}")
+    @PutMapping(SET_MANAGER_BY_ID)
     public ResponseEntity<?> setManagerById(@PathVariable("siteId") long siteId,
                                             @PathVariable("id") long id)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -53,7 +49,7 @@ public class SiteResource {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{siteId}/setManager/userId/{userId}")
+    @PutMapping(SET_MANAGER_BY_USER_ID)
     public ResponseEntity<?> setManagerByUserId(@PathVariable("siteId") long siteId,
                                                 @PathVariable("userId") long userId)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -61,7 +57,7 @@ public class SiteResource {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{siteId}/setManager/username/{username}")
+    @PutMapping(SET_MANAGER_BY_USERNAME)
     public ResponseEntity<?> setManagerByUsername(@PathVariable("siteId") long siteId,
                                                   @PathVariable("username") String username)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -69,23 +65,42 @@ public class SiteResource {
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/company")
+    @GetMapping(GET_BY_COMPANY)
     public ResponseEntity<?> getByCompany() {
         return new ResponseEntity<>(siteService.getByCompany(), HttpStatus.OK);
     }
 
-    @GetMapping("/manager")
+    @GetMapping(GET_BY_MANAGER)
     public ResponseEntity<?> getByManager() throws NotFoundException {
         return new ResponseEntity<>(siteService.getByManager(), HttpStatus.OK);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping(GET_BY_ID)
     public ResponseEntity<?> getById(@PathVariable("id") long id) throws NotFoundException {
         return new ResponseEntity<>(siteService.getById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/companyName/{companyName}")
-    public ResponseEntity<?> getByCompanyName(@PathVariable("companyName") String companyName) {
+    @GetMapping(GET_BY_COMPANY_NAME)
+    public ResponseEntity<?> getByCompanyName(@PathVariable("companyName") String companyName)
+            throws NotFoundException {
         return new ResponseEntity<>(siteService.getByCompanyName(companyName), HttpStatus.OK);
     }
+
+    @Autowired
+    public SiteResource(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+    private final SiteService siteService;
+
+    public static final String SAVE = "/save";
+    public static final String UPDATE = "/update";
+    public static final String DELETE = "/delete/{id}";
+    public static final String SET_MANAGER_BY_ID = "/{siteId}/setManager/id/{id}";
+    public static final String SET_MANAGER_BY_USER_ID = "/{siteId}/setManager/userId/{userId}";
+    public static final String SET_MANAGER_BY_USERNAME = "/{siteId}/setManager/username/{username}";
+    public static final String GET_BY_COMPANY = "/company";
+    public static final String GET_BY_MANAGER = "/manager";
+    public static final String GET_BY_ID = "/id/{id}";
+    public static final String GET_BY_COMPANY_NAME = "/companyName/{companyName}";
 }

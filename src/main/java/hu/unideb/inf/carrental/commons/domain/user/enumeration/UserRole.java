@@ -12,7 +12,7 @@ public enum UserRole implements GrantedAuthority {
         return toString();
     }
 
-    public String getname(){
+    public String getName() {
         return name();
     }
 }

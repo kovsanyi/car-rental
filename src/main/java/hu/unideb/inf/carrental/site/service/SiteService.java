@@ -27,42 +27,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for registering and managing sites.
+ *
+ * @see CreateSiteRequest
+ * @see UpdateSiteRequest
+ * @see SiteResponse
+ */
 @Service
 public class SiteService {
-    private final static Logger LOGGER = LoggerFactory.getLogger(SiteService.class);
-
-    private final SiteRepository siteRepository;
-    private final CompanyRepository companyRepository;
-    private final ManagerRepository managerRepository;
-    private final CarRepository carRepository;
-    private final SiteValidator siteValidator;
-    private final DeleteSite deleteSite;
-
-    private final CreateSiteRequestConverter createSiteRequestConverter;
-    private final UpdateSiteRequestConverter updateSiteRequestConverter;
-    private final SiteResponseConverter siteResponseConverter;
-
-    @Autowired
-    public SiteService(SiteRepository siteRepository, SiteValidator siteValidator, CompanyRepository companyRepository,
-                       ManagerRepository managerRepository, CarRepository carRepository, DeleteSite deleteSite,
-                       CreateSiteRequestConverter createSiteRequestConverter,
-                       UpdateSiteRequestConverter updateSiteRequestConverter,
-                       SiteResponseConverter siteResponseConverter) {
-        this.siteRepository = siteRepository;
-        this.siteValidator = siteValidator;
-        this.companyRepository = companyRepository;
-        this.managerRepository = managerRepository;
-        this.carRepository = carRepository;
-        this.deleteSite = deleteSite;
-        this.createSiteRequestConverter = createSiteRequestConverter;
-        this.updateSiteRequestConverter = updateSiteRequestConverter;
-        this.siteResponseConverter = siteResponseConverter;
-    }
-
+    /**
+     * Registers a new site to the logged in company (owner). If the registration is successful, it returns the ID of
+     * the registered site.
+     *
+     * @param createSiteRequest a request object to register a new site
+     * @return the ID of the registered site
+     * @throws NotFoundException if the specified manager (if presented) in {@code CreateSiteRequest} is invalid
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
     @Secured("ROLE_COMPANY")
+    @Transactional
     public long save(CreateSiteRequest createSiteRequest) throws NotFoundException {
         LOGGER.info("Saving site");
         Site site = createSiteRequestConverter.from(createSiteRequest);
@@ -74,6 +62,14 @@ public class SiteService {
         return siteRepository.save(site).getId();
     }
 
+    /**
+     * Updates the details of the specified site.<br>
+     * <b>This method can only be called by a company owner or a manager.</b>
+     *
+     * @param updateSiteRequest a request object to update a site
+     * @throws NotFoundException           if the specified site ID in {@code UpdateSiteRequest} is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to update the specified site
+     */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
     public void update(UpdateSiteRequest updateSiteRequest) throws NotFoundException, UnauthorizedAccessException {
         LOGGER.info("Updating site");
@@ -87,6 +83,16 @@ public class SiteService {
         siteRepository.save(site);
     }
 
+    /**
+     * Deletes a site by ID including the registered cars to it.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @param id ID of the site
+     * @throws NotFoundException           if the site ID is invalid
+     * @throws UnauthorizedAccessException if the logged in company owner has no right to delete the specified site
+     * @throws CollisionException          if one of the cars that registered to the site is under rent
+     * @see hu.unideb.inf.carrental.car.service.CarService
+     */
     @Secured("ROLE_COMPANY")
     public void delete(long id) throws NotFoundException, UnauthorizedAccessException, CollisionException {
         LOGGER.info("Deleting site by ID {}", id);
@@ -95,6 +101,19 @@ public class SiteService {
         deleteSite.delete(site);
     }
 
+    /**
+     * Sets a manager by <b>manager ID</b> to the specified site.<br>
+     * <b>Manager ID does not equal to user ID!</b> The user ID is unique to the whole system including company,
+     * manager and customer IDs, whereas the manager ID is unique only among the managers.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @param siteId    ID of the site
+     * @param managerId ID of the manager
+     * @throws NotFoundException           if the site ID or the manager ID is invalid
+     * @throws UnauthorizedAccessException if the logged in company owner has no right to modify the given site
+     * @throws ManagerCollisionException   if the specified manager already has a managed site
+     * @see hu.unideb.inf.carrental.manager.service.ManagerService
+     */
     @Secured("ROLE_COMPANY")
     public void setManagerById(long siteId, long managerId)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -104,6 +123,19 @@ public class SiteService {
         setManager(manager, siteId);
     }
 
+    /**
+     * Sets a manager by <b>user ID</b> to the specified site.<br>
+     * <b>User ID does not equal to manager ID!</b> The user ID is unique to the whole system including company,
+     * manager and customer IDs, whereas the manager ID is unique only among the managers.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @param siteId        ID of the site
+     * @param managerUserId user ID of the manager
+     * @throws NotFoundException           if the site ID or the user ID of the manager is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to modify the given site
+     * @throws ManagerCollisionException   if the specified manager already has a managed site
+     * @see hu.unideb.inf.carrental.manager.service.ManagerService
+     */
     @Secured("ROLE_COMPANY")
     public void setManagerByUserId(long siteId, long managerUserId)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -113,6 +145,17 @@ public class SiteService {
         setManager(manager, siteId);
     }
 
+    /**
+     * Sets a manager by username to the specified site.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @param siteId          ID of the site
+     * @param managerUsername username of the manager
+     * @throws NotFoundException           if the site ID or the manager username is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to modify the given site
+     * @throws ManagerCollisionException   if the specified manager already has a managed site
+     * @see hu.unideb.inf.carrental.manager.service.ManagerService
+     */
     @Secured("ROLE_COMPANY")
     public void setManagerByUsername(long siteId, String managerUsername)
             throws NotFoundException, UnauthorizedAccessException, ManagerCollisionException {
@@ -122,6 +165,13 @@ public class SiteService {
         setManager(manager, siteId);
     }
 
+    /**
+     * Returns the details of all the sites connected to logged in company (owner).<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @return the details of all sites connected to logged in company (owner)
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
     @Secured("ROLE_COMPANY")
     public List<SiteResponse> getByCompany() {
         LOGGER.info("Providing sites to company owner");
@@ -129,6 +179,14 @@ public class SiteService {
                 .stream().map(siteResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the details of the managed site.<br>
+     * <b>This method can only be called by a manager.</b>
+     *
+     * @return the details of the managed site
+     * @throws NotFoundException if the manager has not got a managed site
+     * @see hu.unideb.inf.carrental.manager.service.ManagerService
+     */
     @Secured("ROLE_MANAGER")
     public SiteResponse getByManager() throws NotFoundException {
         LOGGER.info("Providing site to its manager");
@@ -136,14 +194,32 @@ public class SiteService {
                 .orElseThrow(() -> new NotFoundException(Constants.NO_MANAGED_SITE)));
     }
 
+    /**
+     * Returns the site details by ID.
+     *
+     * @param id ID of the site
+     * @return the site details by ID
+     * @throws NotFoundException if the site ID is invalid
+     */
     public SiteResponse getById(long id) throws NotFoundException {
         LOGGER.info("Providing site by ID {}", id);
         return siteResponseConverter.from(siteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Constants.SITE_NOT_FOUND)));
     }
 
-    public List<SiteResponse> getByCompanyName(String companyName) {
+    /**
+     * Returns the details of all sites by company name.
+     *
+     * @param companyName name of the company
+     * @return the site details by company name
+     * @throws NotFoundException if the site ID is invalid
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
+    public List<SiteResponse> getByCompanyName(String companyName) throws NotFoundException {
         LOGGER.info("Providing sites of company named {}", companyName);
+        if (!companyRepository.existsByName(companyName)) {
+            throw new NotFoundException(Constants.SITE_NOT_FOUND);
+        }
         return siteRepository.findByCompanyName(companyName).stream().map(siteResponseConverter::from)
                 .collect(Collectors.toList());
     }
@@ -164,4 +240,34 @@ public class SiteService {
         LOGGER.trace("Getting user");
         return SecurityUtils.getLoggedInUser();
     }
+
+    @Autowired
+    public SiteService(SiteRepository siteRepository, SiteValidator siteValidator, CompanyRepository companyRepository,
+                       ManagerRepository managerRepository, CarRepository carRepository, DeleteSite deleteSite,
+                       CreateSiteRequestConverter createSiteRequestConverter,
+                       UpdateSiteRequestConverter updateSiteRequestConverter,
+                       SiteResponseConverter siteResponseConverter) {
+        this.siteRepository = siteRepository;
+        this.siteValidator = siteValidator;
+        this.companyRepository = companyRepository;
+        this.managerRepository = managerRepository;
+        this.carRepository = carRepository;
+        this.deleteSite = deleteSite;
+        this.createSiteRequestConverter = createSiteRequestConverter;
+        this.updateSiteRequestConverter = updateSiteRequestConverter;
+        this.siteResponseConverter = siteResponseConverter;
+    }
+
+    private final SiteRepository siteRepository;
+    private final CompanyRepository companyRepository;
+    private final ManagerRepository managerRepository;
+    private final CarRepository carRepository;
+    private final SiteValidator siteValidator;
+    private final DeleteSite deleteSite;
+
+    private final CreateSiteRequestConverter createSiteRequestConverter;
+    private final UpdateSiteRequestConverter updateSiteRequestConverter;
+    private final SiteResponseConverter siteResponseConverter;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(SiteService.class);
 }

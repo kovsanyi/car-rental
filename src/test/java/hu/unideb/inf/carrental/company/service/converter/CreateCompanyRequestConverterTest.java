@@ -16,7 +16,7 @@ public class CreateCompanyRequestConverterTest {
 
     @Test
     public void from() throws Exception {
-        CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("user", "user", "user@mail.com", "Company", "company@mail.com", "123", "Company Owner", 123, "Debrecen", "Kassai");
+        CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("user", "user", "user@mail.com", "Company", "company@mail.com", "Company Owner", "123", 123, "Debrecen", "Kassai");
         Company company = createCompanyRequestConverter.from(createCompanyRequest);
         assert company.getUser().getId() == null;
         assert company.getUser().getUsername().equals(createCompanyRequest.getUserUsername());

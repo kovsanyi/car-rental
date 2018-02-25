@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository extends CrudRepository<Reservation, Long> {
-    Optional<Reservation> findById(Long id);
+    Optional<Reservation> findById(long id);
 
     Optional<Reservation> findByCustomerAndReturnedDateIsNull(Customer customer);
 

@@ -15,4 +15,19 @@ public class CarImageResponse {
     public String getData() {
         return data;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CarImageResponse that = (CarImageResponse) o;
+
+        return data.equals(that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return data.hashCode();
+    }
 }

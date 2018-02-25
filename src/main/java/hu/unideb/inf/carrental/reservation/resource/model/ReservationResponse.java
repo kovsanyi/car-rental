@@ -19,7 +19,9 @@ public class ReservationResponse {
     public ReservationResponse() {
     }
 
-    public ReservationResponse(Long id, String customerUserUsername, String customerFullName, String companyName, Long carId, CarCategory carCategory, String carBrand, String carModel, String receiveDate, String plannedReturnDate, String returnedDate, Integer price) {
+    public ReservationResponse(Long id, String customerUserUsername, String customerFullName, String companyName,
+                               Long carId, CarCategory carCategory, String carBrand, String carModel, String receiveDate,
+                               String plannedReturnDate, String returnedDate, Integer price) {
         this.id = id;
         this.customerUserUsername = customerUserUsername;
         this.customerFullName = customerFullName;
@@ -128,5 +130,45 @@ public class ReservationResponse {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReservationResponse that = (ReservationResponse) o;
+
+        if (!id.equals(that.id)) return false;
+        if (customerUserUsername != null ? !customerUserUsername.equals(that.customerUserUsername) : that.customerUserUsername != null)
+            return false;
+        if (customerFullName != null ? !customerFullName.equals(that.customerFullName) : that.customerFullName != null)
+            return false;
+        if (companyName != null ? !companyName.equals(that.companyName) : that.companyName != null) return false;
+        if (carId != null ? !carId.equals(that.carId) : that.carId != null) return false;
+        if (carCategory != that.carCategory) return false;
+        if (carBrand != null ? !carBrand.equals(that.carBrand) : that.carBrand != null) return false;
+        if (carModel != null ? !carModel.equals(that.carModel) : that.carModel != null) return false;
+        if (!receiveDate.equals(that.receiveDate)) return false;
+        if (!plannedReturnDate.equals(that.plannedReturnDate)) return false;
+        if (returnedDate != null ? !returnedDate.equals(that.returnedDate) : that.returnedDate != null) return false;
+        return price.equals(that.price);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + (customerUserUsername != null ? customerUserUsername.hashCode() : 0);
+        result = 31 * result + (customerFullName != null ? customerFullName.hashCode() : 0);
+        result = 31 * result + (companyName != null ? companyName.hashCode() : 0);
+        result = 31 * result + (carId != null ? carId.hashCode() : 0);
+        result = 31 * result + (carCategory != null ? carCategory.hashCode() : 0);
+        result = 31 * result + (carBrand != null ? carBrand.hashCode() : 0);
+        result = 31 * result + (carModel != null ? carModel.hashCode() : 0);
+        result = 31 * result + receiveDate.hashCode();
+        result = 31 * result + plannedReturnDate.hashCode();
+        result = 31 * result + (returnedDate != null ? returnedDate.hashCode() : 0);
+        result = 31 * result + price.hashCode();
+        return result;
     }
 }

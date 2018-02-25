@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -25,6 +26,7 @@ public class DeleteReservation {
         this.reservationRepository = reservationRepository;
     }
 
+    @Transactional
     public void deleteCar(Car car) throws CarInRentException {
         LOGGER.trace("Updating reservations due to car removing");
         if (reservationRepository.findByCarAndReturnedDateIsNull(car).isPresent()) {
@@ -38,6 +40,7 @@ public class DeleteReservation {
         }
     }
 
+    @Transactional
     public void deleteCompany(Company company) throws CarInRentException {
         LOGGER.trace("Updating reservations due to company removing");
         if (!reservationRepository.findByCompanyAndReturnedDateIsNull(company).isEmpty()) {
@@ -51,6 +54,7 @@ public class DeleteReservation {
         }
     }
 
+    @Transactional
     public void deleteCustomer(Customer customer) throws CarInRentException {
         LOGGER.trace("Updating reservations due to customer removing");
         if (reservationRepository.findByCustomerAndReturnedDateIsNull(customer).isPresent()) {

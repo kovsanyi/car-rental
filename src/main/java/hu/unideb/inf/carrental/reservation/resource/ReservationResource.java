@@ -1,9 +1,6 @@
 package hu.unideb.inf.carrental.reservation.resource;
 
-import hu.unideb.inf.carrental.commons.exception.CarInRentException;
-import hu.unideb.inf.carrental.commons.exception.NotFoundException;
-import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
-import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
+import hu.unideb.inf.carrental.commons.exception.*;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.SuccessResponse;
 import hu.unideb.inf.carrental.reservation.resource.model.CreateReservationRequest;
@@ -23,60 +20,77 @@ public class ReservationResource {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/reserve")
+    @PostMapping(RESERVE)
     public ResponseEntity reserve(@RequestBody CreateReservationRequest createReservationRequest)
-            throws NotFoundException, CarInRentException, ReservationCollisionException {
-        return new ResponseEntity<>(new CreatedResponse(reservationService.reserve(createReservationRequest)), HttpStatus.CREATED);
+            throws NotFoundException, CarInRentException, ReservationCollisionException, InvalidInputException {
+        return new ResponseEntity<>(
+                new CreatedResponse(reservationService.reserve(createReservationRequest)), HttpStatus.CREATED);
     }
 
-    @PutMapping("/close/{reservationId}")
-    public ResponseEntity close(@PathVariable("reservationId") long reservationId) throws NotFoundException, UnauthorizedAccessException {
+    @PutMapping(CLOSE)
+    public ResponseEntity close(@PathVariable("reservationId") long reservationId)
+            throws NotFoundException, UnauthorizedAccessException {
         reservationService.close(reservationId);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/customer/active")
+    @GetMapping(ACTIVE_BY_CUSTOMER)
     public ResponseEntity<?> getActiveByCustomer() throws NotFoundException {
         return new ResponseEntity<>(reservationService.getActiveByCustomer(), HttpStatus.OK);
     }
 
-    @GetMapping("/customer/closed")
+    @GetMapping(CLOSED_BY_CUSTOMER)
     public ResponseEntity<?> getClosedByCustomer() {
         return new ResponseEntity<>(reservationService.getClosedByCustomer(), HttpStatus.OK);
     }
 
-    @GetMapping("/customer/all")
+    @GetMapping(ALL_BY_CUSTOMER)
     public ResponseEntity<?> getAllByCustomer() {
         return new ResponseEntity<>(reservationService.getAllByCustomer(), HttpStatus.OK);
     }
 
-    @GetMapping("/siteId/{siteId}/active")
-    public ResponseEntity getActiveBySite(@PathVariable("siteId") long siteId) throws NotFoundException, UnauthorizedAccessException {
+    @GetMapping(ACTIVE_BY_SITE)
+    public ResponseEntity getActiveBySite(@PathVariable("siteId") long siteId)
+            throws NotFoundException, UnauthorizedAccessException {
         return new ResponseEntity<>(reservationService.getActiveBySiteId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/siteId/{siteId}/closed")
-    public ResponseEntity getClosedBySite(@PathVariable("siteId") long siteId) throws NotFoundException, UnauthorizedAccessException {
+    @GetMapping(CLOSED_BY_SITE)
+    public ResponseEntity getClosedBySite(@PathVariable("siteId") long siteId)
+            throws NotFoundException, UnauthorizedAccessException {
         return new ResponseEntity<>(reservationService.getClosedBySiteId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/siteId/{siteId}/all")
-    public ResponseEntity getAllBySite(@PathVariable("siteId") long siteId) throws NotFoundException, UnauthorizedAccessException {
+    @GetMapping(ALL_BY_SITE)
+    public ResponseEntity getAllBySite(@PathVariable("siteId") long siteId)
+            throws NotFoundException, UnauthorizedAccessException {
         return new ResponseEntity<>(reservationService.getAllBySiteId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/company/active")
+    @GetMapping(ACTIVE_BY_COMPANY)
     public ResponseEntity getActiveByCompany() {
         return new ResponseEntity<>(reservationService.getActiveByCompany(), HttpStatus.OK);
     }
 
-    @GetMapping("/company/closed")
+    @GetMapping(CLOSED_BY_COMPANY)
     public ResponseEntity getClosedByCompany() {
         return new ResponseEntity<>(reservationService.getClosedByCompany(), HttpStatus.OK);
     }
 
-    @GetMapping("/company/all")
+    @GetMapping(ALL_BY_COMPANY)
     public ResponseEntity getAllByCompany() {
         return new ResponseEntity<>(reservationService.getAllByCompany(), HttpStatus.OK);
     }
+
+    public static final String RESERVE = "/reserve";
+    public static final String CLOSE = "/close/{reservationId}";
+    public static final String ACTIVE_BY_CUSTOMER = "/customer/active";
+    public static final String CLOSED_BY_CUSTOMER = "/customer/closed";
+    public static final String ALL_BY_CUSTOMER = "/customer/all";
+    public static final String ACTIVE_BY_SITE = "/siteId/{siteId}/active";
+    public static final String CLOSED_BY_SITE = "/siteId/{siteId}/closed";
+    public static final String ALL_BY_SITE = "/siteId/{siteId}/all";
+    public static final String ACTIVE_BY_COMPANY = "/company/active";
+    public static final String CLOSED_BY_COMPANY = "/company/closed";
+    public static final String ALL_BY_COMPANY = "/company/all";
 }

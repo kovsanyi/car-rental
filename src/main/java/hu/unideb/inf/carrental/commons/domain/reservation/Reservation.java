@@ -94,12 +94,40 @@ public class Reservation {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reservation that = (Reservation) o;
+
+        if (customer != null ? !customer.equals(that.customer) : that.customer != null) return false;
+        if (company != null ? !company.equals(that.company) : that.company != null) return false;
+        if (car != null ? !car.equals(that.car) : that.car != null) return false;
+        if (!receiveDate.equals(that.receiveDate)) return false;
+        if (!plannedReturnDate.equals(that.plannedReturnDate)) return false;
+        if (returnedDate != null ? !returnedDate.equals(that.returnedDate) : that.returnedDate != null) return false;
+        return price.equals(that.price);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = customer != null ? customer.hashCode() : 0;
+        result = 31 * result + (company != null ? company.hashCode() : 0);
+        result = 31 * result + (car != null ? car.hashCode() : 0);
+        result = 31 * result + receiveDate.hashCode();
+        result = 31 * result + plannedReturnDate.hashCode();
+        result = 31 * result + (returnedDate != null ? returnedDate.hashCode() : 0);
+        result = 31 * result + price.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Reservation{" +
                 "id=" + id +
-                ", customer=" + customer +
-                ", company=" + company +
-                ", car=" + car +
+                ", customerID=" + customer.getId() +
+                ", companyID=" + company.getId() +
+                ", carID=" + car.getId() +
                 ", receiveDate=" + receiveDate +
                 ", plannedReturnDate=" + plannedReturnDate +
                 ", returnedDate=" + returnedDate +

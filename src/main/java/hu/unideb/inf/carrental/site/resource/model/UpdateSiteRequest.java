@@ -112,4 +112,45 @@ public class UpdateSiteRequest {
     public void setOpeningHours(String openingHours) {
         this.openingHours = openingHours;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UpdateSiteRequest that = (UpdateSiteRequest) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!email.equals(that.email)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
+        if (!zipCode.equals(that.zipCode)) return false;
+        if (!city.equals(that.city)) return false;
+        if (!address.equals(that.address)) return false;
+        return openingHours.equals(that.openingHours);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + address.hashCode();
+        result = 31 * result + openingHours.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateSiteRequest{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", zipCode=" + zipCode +
+                ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
+                ", openingHours='" + openingHours + '\'' +
+                '}';
+    }
 }

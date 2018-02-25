@@ -10,10 +10,7 @@ import hu.unideb.inf.carrental.commons.domain.reservation.Reservation;
 import hu.unideb.inf.carrental.commons.domain.reservation.ReservationRepository;
 import hu.unideb.inf.carrental.commons.domain.site.Site;
 import hu.unideb.inf.carrental.commons.domain.site.SiteRepository;
-import hu.unideb.inf.carrental.commons.exception.CarInRentException;
-import hu.unideb.inf.carrental.commons.exception.NotFoundException;
-import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
-import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
+import hu.unideb.inf.carrental.commons.exception.*;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.reservation.resource.model.CreateReservationRequest;
 import hu.unideb.inf.carrental.reservation.resource.model.ReservationResponse;
@@ -27,49 +24,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for creating, managing and closing the reservations.
+ *
+ * @see CreateReservationRequest
+ * @see ReservationResponse
+ */
 @Service
 public class ReservationService {
-    private static final Logger logger = LoggerFactory.getLogger(ReservationService.class);
-
-    private final ReservationValidator reservationValidator;
-    private final SiteValidator siteValidator;
-    private final ReservationRepository reservationRepository;
-    private final CarRepository carRepository;
-    private final CompanyRepository companyRepository;
-    private final SiteRepository siteRepository;
-    private final CustomerRepository customerRepository;
-
-    private final CreateReservationRequestConverter createReservationRequestConverter;
-    private final ReservationResponseConverter reservationResponseConverter;
-
-    @Autowired
-    public ReservationService(ReservationValidator reservationValidator, SiteValidator siteValidator,
-                              ReservationRepository reservationRepository, CarRepository carRepository,
-                              CompanyRepository companyRepository, SiteRepository siteRepository,
-                              CustomerRepository customerRepository,
-                              CreateReservationRequestConverter createReservationRequestConverter,
-                              ReservationResponseConverter reservationResponseConverter) {
-        this.reservationValidator = reservationValidator;
-        this.siteValidator = siteValidator;
-        this.reservationRepository = reservationRepository;
-        this.carRepository = carRepository;
-        this.companyRepository = companyRepository;
-        this.siteRepository = siteRepository;
-        this.customerRepository = customerRepository;
-        this.createReservationRequestConverter = createReservationRequestConverter;
-        this.reservationResponseConverter = reservationResponseConverter;
-    }
-
+    /**
+     * Reserves the selected car for the specified period for the logged in customer.
+     * <b>This method can only be called by a customer.</b>
+     *
+     * @param createReservationRequest a request object to create a new reservation
+     * @return the ID of the reservation
+     * @throws NotFoundException             if the car ID is invalid
+     * @throws CarInRentException            if the selected car can not be rented for the selected period
+     * @throws ReservationCollisionException if the customer has an active reservation
+     * @throws InvalidInputException         if the specified period is invalid
+     * @see hu.unideb.inf.carrental.customer.service.CustomerService
+     */
     @Secured("ROLE_CUSTOMER")
     public long reserve(CreateReservationRequest createReservationRequest)
-            throws NotFoundException, CarInRentException, ReservationCollisionException {
-        logger.info("Creating reservation");
+            throws NotFoundException, CarInRentException, ReservationCollisionException, InvalidInputException {
+        LOGGER.info("Creating reservation");
         Reservation reservation = createReservationRequestConverter.from(createReservationRequest);
         reservation.setCustomer(getCustomer());
         reservation.setCar(carRepository.findById(reservation.getCar().getId())
@@ -82,9 +65,19 @@ public class ReservationService {
         return reservationRepository.save(reservation).getId();
     }
 
+    /**
+     * Closes the active reservation by reservation ID.<br>
+     * <b>This method can only be called by a company owner or a manager who has rights to modify site where the
+     * car found.</b>
+     *
+     * @param id ID of the reservation
+     * @throws NotFoundException           if the reservation ID is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to close the reservation
+     * @see hu.unideb.inf.carrental.site.service.SiteService
+     */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
     public void close(long id) throws NotFoundException, UnauthorizedAccessException {
-        logger.info("Closing reservation ID {}", id);
+        LOGGER.info("Closing reservation ID {}", id);
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Constants.RESERVATION_NOT_FOUND));
         reservationValidator.validateClosing(reservation);
@@ -94,68 +87,141 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
+    /**
+     * Returns the active reservations by the logged in customer.<br>
+     * <b>This method can only be called by a customer.</b>
+     *
+     * @return the active reservations by the logged in customer
+     * @throws NotFoundException if the customer has not got an active reservation
+     * @see hu.unideb.inf.carrental.customer.service.CustomerService
+     */
     @Secured("ROLE_CUSTOMER")
     public ReservationResponse getActiveByCustomer() throws NotFoundException {
-        logger.info("Providing active reservation to customer");
+        LOGGER.info("Providing active reservation to customer");
         return reservationResponseConverter.from(reservationRepository.findByCustomerAndReturnedDateIsNull(getCustomer())
                 .orElseThrow(() -> new NotFoundException(Constants.NO_ACTIVE_RESERVATION)));
     }
 
+    /**
+     * Returns the closed reservations by the logged in customer.<br>
+     * <b>This method can only be called by a customer.</b>
+     *
+     * @return the closed reservations by the logged in customer
+     * @see hu.unideb.inf.carrental.customer.service.CustomerService
+     */
     @Secured("ROLE_CUSTOMER")
     public List<ReservationResponse> getClosedByCustomer() {
-        logger.info("Providing all closed reservation to customer");
+        LOGGER.info("Providing all closed reservation to customer");
         return reservationRepository.findByCustomerAndReturnedDateIsNotNull(getCustomer()).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns all the reservations including active and closed ones by the logged in customer.<br>
+     * <b>This method can only be called by a customer.</b>
+     *
+     * @return all the reservations including active and closed ones by the logged in customer
+     * @see hu.unideb.inf.carrental.customer.service.CustomerService
+     */
     @Secured("ROLE_CUSTOMER")
     public List<ReservationResponse> getAllByCustomer() {
-        logger.info("Providing all reservation to customer");
+        LOGGER.info("Providing all reservation to customer");
         return reservationRepository.findByCustomer(getCustomer()).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the active reservations by site ID.<br>
+     * <b>This method can only be called by a company owner or a manager who has rights to modify site where the
+     * car found.</b>
+     *
+     * @param siteId ID of the site
+     * @return the active reservations by site ID
+     * @throws NotFoundException           if the site ID is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to get the specified reservation
+     * @see hu.unideb.inf.carrental.site.service.SiteService
+     */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
     public List<ReservationResponse> getActiveBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
-        logger.info("Providing active reservations of site ID {}", siteId);
+        LOGGER.info("Providing active reservations of site ID {}", siteId);
         return reservationRepository.findByCarSiteAndReturnedDateIsNull(getSite(siteId)).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the closed reservations by site ID.<br>
+     * <b>This method can only be called by a company owner or a manager who has rights to modify site where the
+     * car found.</b>
+     *
+     * @param siteId ID of the site
+     * @return the closed reservations by site ID
+     * @throws NotFoundException           if the site ID is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to get the specified reservation
+     * @see hu.unideb.inf.carrental.site.service.SiteService
+     */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
     public List<ReservationResponse> getClosedBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
-        logger.info("Providing closed reservations of site ID {}", siteId);
+        LOGGER.info("Providing closed reservations of site ID {}", siteId);
         return reservationRepository.findByCarSiteAndReturnedDateIsNotNull(getSite(siteId)).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns all the reservations including active and closed ones by site ID.<br>
+     * <b>This method can only be called by a company owner or a manager who has rights to modify site where the
+     * car found.</b>
+     *
+     * @param siteId ID of the site
+     * @return all the reservations including active and closed ones by site ID
+     * @throws NotFoundException           if the site ID is invalid
+     * @throws UnauthorizedAccessException if the logged in user has no right to get the specified reservation
+     * @see hu.unideb.inf.carrental.site.service.SiteService
+     */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
     public List<ReservationResponse> getAllBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
-        logger.info("Providing all reservation of site ID {}", siteId);
+        LOGGER.info("Providing all reservation of site ID {}", siteId);
         return reservationRepository.findByCarSite(getSite(siteId)).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the active reservations by the logged in company owner.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @return the active reservations by the logged in company owner
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
     @Secured("ROLE_COMPANY")
-    @Transactional
     public List<ReservationResponse> getActiveByCompany() {
-        logger.info("Providing active reservations of company");
+        LOGGER.info("Providing active reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNull(getCompany()).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns the closed reservations by the logged in company owner.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @return the closed reservations by the logged in company owner
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
     @Secured("ROLE_COMPANY")
-    @Transactional
     public List<ReservationResponse> getClosedByCompany() {
-        logger.info("Providing closed reservations of company");
+        LOGGER.info("Providing closed reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNotNull(getCompany()).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
 
+    /**
+     * Returns all the reservations including active and closed ones by the logged in company owner.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @return all the reservations including active and closed ones by the logged in company owner
+     * @see hu.unideb.inf.carrental.company.service.CompanyService
+     */
     @Secured("ROLE_COMPANY")
-    @Transactional
     public List<ReservationResponse> getAllByCompany() {
-        logger.info("Providing all reservation of company");
+        LOGGER.info("Providing all reservation of company");
         return reservationRepository.findByCompany(getCompany()).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
@@ -178,4 +244,35 @@ public class ReservationService {
         int days = (int) ChronoUnit.DAYS.between(first, last);
         return (days + 1) * carPrice;
     }
+
+    @Autowired
+    public ReservationService(ReservationValidator reservationValidator, SiteValidator siteValidator,
+                              ReservationRepository reservationRepository, CarRepository carRepository,
+                              CompanyRepository companyRepository, SiteRepository siteRepository,
+                              CustomerRepository customerRepository,
+                              CreateReservationRequestConverter createReservationRequestConverter,
+                              ReservationResponseConverter reservationResponseConverter) {
+        this.reservationValidator = reservationValidator;
+        this.siteValidator = siteValidator;
+        this.reservationRepository = reservationRepository;
+        this.carRepository = carRepository;
+        this.companyRepository = companyRepository;
+        this.siteRepository = siteRepository;
+        this.customerRepository = customerRepository;
+        this.createReservationRequestConverter = createReservationRequestConverter;
+        this.reservationResponseConverter = reservationResponseConverter;
+    }
+
+    private final ReservationValidator reservationValidator;
+    private final SiteValidator siteValidator;
+    private final ReservationRepository reservationRepository;
+    private final CarRepository carRepository;
+    private final CompanyRepository companyRepository;
+    private final SiteRepository siteRepository;
+    private final CustomerRepository customerRepository;
+
+    private final CreateReservationRequestConverter createReservationRequestConverter;
+    private final ReservationResponseConverter reservationResponseConverter;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReservationService.class);
 }

@@ -3,74 +3,79 @@ package hu.unideb.inf.carrental.manager.resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.unideb.inf.carrental.commons.constant.Constants;
-import hu.unideb.inf.carrental.commons.domain.manager.Manager;
-import hu.unideb.inf.carrental.commons.domain.user.User;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.enumeration.ExceptionType;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.ErrorResponse;
 import hu.unideb.inf.carrental.commons.model.SuccessResponse;
 import hu.unideb.inf.carrental.manager.resource.model.CreateManagerRequest;
+import hu.unideb.inf.carrental.manager.resource.model.ManagerResponse;
 import hu.unideb.inf.carrental.manager.resource.model.UpdateManagerRequest;
 import hu.unideb.inf.carrental.manager.service.ManagerService;
-import hu.unideb.inf.carrental.manager.service.converter.CreateManagerRequestConverter;
-import hu.unideb.inf.carrental.manager.service.converter.ManagerResponseConverter;
-import hu.unideb.inf.carrental.manager.service.converter.UpdateManagerRequestConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static hu.unideb.inf.carrental.manager.resource.ManagerResource.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@SqlGroup({
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:beforeTestRun.sql"),
+        @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:afterTestRun.sql")
+})
 public class ManagerResourceTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-        managerService.save(testCreateManagerRequest());
     }
 
     @Test
     public void saveShouldBeSuccess() throws Exception {
-        CreateManagerRequest request = testCreateManagerRequest();
-        request.setUserUsername("test2");
-        request.setUserEmail("test2@mail.com");
+        CreateManagerRequest createManagerRequest = new CreateManagerRequest("newManager".toLowerCase(), "password", "newmanager@mail.com", "New Manager", "11111111111", 1111, "City", "Address");
+        ManagerResponse managerResponse = new ManagerResponse(3L, 10L, "newManager".toLowerCase(), "newmanager@mail.com", UserRole.ROLE_MANAGER.toString(), "New Manager", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
-                post(Constants.PATH_MANAGER + ManagerResource.SAVE)
+                post(PATH + SAVE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request)))
+                        .content(toJson(createManagerRequest)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString()
-                .equals(toJson(new CreatedResponse(2L)));
+                .equals(toJson(new CreatedResponse(3L)));
+
+        assert mvc.perform(
+                get(PATH + GET_BY_ID, 3))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerResponse));
     }
 
     @Test
     public void saveWhenUsernameAlreadyExists() throws Exception {
-        CreateManagerRequest request = testCreateManagerRequest();
-        request.setUserEmail("test2@mail.com");
+        CreateManagerRequest createManagerRequest = new CreateManagerRequest("manager".toLowerCase(), "password", "newmanager@mail.com", "New Manager", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
-                post(Constants.PATH_MANAGER + ManagerResource.SAVE)
+                post(PATH + SAVE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request)))
+                        .content(toJson(createManagerRequest)))
                 .andExpect(status().isNotAcceptable())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.USERNAME_EXISTS, Constants.USERNAME_ALREADY_EXISTS)));
@@ -78,13 +83,12 @@ public class ManagerResourceTest {
 
     @Test
     public void saveWhenEmailAlreadyExists() throws Exception {
-        CreateManagerRequest request = testCreateManagerRequest();
-        request.setUserUsername("test2");
+        CreateManagerRequest createManagerRequest = new CreateManagerRequest("newManager".toLowerCase(), "password", "manager@mail.com", "New Manager", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
-                post(Constants.PATH_MANAGER + ManagerResource.SAVE)
+                post(PATH + SAVE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request)))
+                        .content(toJson(createManagerRequest)))
                 .andExpect(status().isNotAcceptable())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.EMAIL_EXISTS, Constants.EMAIL_ALREADY_EXISTS)));
@@ -92,53 +96,93 @@ public class ManagerResourceTest {
 
     @Test
     public void updateShouldBeSuccess() throws Exception {
-        UpdateManagerRequest request = testUpdateManagerRequest();
+        UpdateManagerRequest updateManagerRequest = new UpdateManagerRequest("Updated Manager", "11111111112", 1112, "City1", "Address1");
+        ManagerResponse managerResponse = new ManagerResponse(1L, 8L, "manager".toLowerCase(), "manager@mail.com", UserRole.ROLE_MANAGER.toString(), "Updated Manager", "11111111112", 1112, "City1", "Address1");
 
         assert mvc.perform(
-                put(Constants.PATH_MANAGER + ManagerResource.UPDATE)
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword()))
+                put(PATH + UPDATE)
+                        .with(withAuth("manager"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(request)))
+                        .content(toJson(updateManagerRequest)))
                 .andExpect(status().isAccepted())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
+
+        assert mvc.perform(
+                get(PATH + GET_BY_ID, 1))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerResponse));
     }
 
     @Test
     public void deleteShouldBeSuccess() throws Exception {
         assert mvc.perform(
-                delete(Constants.PATH_MANAGER + ManagerResource.DELETE)
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                delete(PATH + DELETE)
+                        .with(withAuth("manager")))
+                .andExpect(status().isAccepted())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(new SuccessResponse()));
+
+        assert mvc.perform(
+                delete(PATH + DELETE)
+                        .with(withAuth("managerWithSite")))
                 .andExpect(status().isAccepted())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
 
     @Test
+    public void deleteWhenAlreadyDeleted() throws Exception {
+        assert mvc.perform(
+                delete(PATH + DELETE)
+                        .with(withAuth("manager")))
+                .andExpect(status().isAccepted())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(new SuccessResponse()));
+
+        mvc.perform(
+                delete(PATH + DELETE)
+                        .with(withAuth("manager")))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     public void getShouldBeSuccess() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_ROOT)
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_ROOT)
+                        .with(withAuth("manager")))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-                .equals(toJson(managerResponseConverter.from(testManager())));
+                .equals(toJson(managerService.getById(1L)));
+
+        assert mvc.perform(
+                get(PATH + GET_ROOT)
+                        .with(withAuth("managerWithSite")))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerService.getById(2L)));
     }
 
     @Test
     public void getByIdShouldBeSuccess() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_ID, testManager().getId())
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_ID, 1))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-                .equals(toJson(managerResponseConverter.from(testManager())));
+                .equals(toJson(managerService.getById(1L)));
+
+        assert mvc.perform(
+                get(PATH + GET_BY_ID, 2))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerService.getById(2L)));
     }
 
     @Test
     public void getByIdWhenInputInvalid() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_ID, 2)
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_ID, 100))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.NOT_FOUND, Constants.MANAGER_NOT_FOUND)));
@@ -147,18 +191,22 @@ public class ManagerResourceTest {
     @Test
     public void getByUserIdShouldBeSuccess() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_USER_ID, testUser().getId())
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_USER_ID, 8))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-                .equals(toJson(managerResponseConverter.from(testManager())));
+                .equals(toJson(managerService.getById(1L)));
+
+        assert mvc.perform(
+                get(PATH + GET_BY_USER_ID, 9))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerService.getById(2L)));
     }
 
     @Test
     public void getByUserIdWhenInputInvalid() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_USER_ID, 2)
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_USER_ID, 1))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.NOT_FOUND, Constants.MANAGER_NOT_FOUND)));
@@ -167,93 +215,48 @@ public class ManagerResourceTest {
     @Test
     public void getByUsernameShouldBeSuccess() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_USERNAME, testUser().getUsername())
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_USERNAME, "manager"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
-                .equals(toJson(managerResponseConverter.from(testManager())));
+                .equals(toJson(managerService.getById(1L)));
+
+        assert mvc.perform(
+                get(PATH + GET_BY_USERNAME, "managerWithSite"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString()
+                .equals(toJson(managerService.getById(2L)));
+
     }
 
     @Test
     public void getByUsernameWhenInputInvalid() throws Exception {
         assert mvc.perform(
-                get(Constants.PATH_MANAGER + ManagerResource.GET_BY_USERNAME, "invalidUsername")
-                        .with(httpBasic(testUser().getUsername(), testUser().getPassword())))
+                get(PATH + GET_BY_USERNAME, "company"))
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.NOT_FOUND, Constants.MANAGER_NOT_FOUND)));
     }
 
-    private UpdateManagerRequest testUpdateManagerRequest() {
-        UpdateManagerRequest request = new UpdateManagerRequest();
-        request.setFullName(testManager().getFullName() + "updated");
-        request.setPhoneNumber(testManager().getPhoneNumber());
-        request.setZipCode(testManager().getZipCode());
-        request.setCity(testManager().getCity());
-        request.setAddress(testManager().getAddress());
-        return request;
-    }
-
-    private CreateManagerRequest testCreateManagerRequest() {
-        CreateManagerRequest request = new CreateManagerRequest();
-        request.setUserUsername(testManager().getUser().getUsername());
-        request.setUserPassword(testManager().getUser().getPassword());
-        request.setUserEmail(testManager().getUser().getEmail());
-        request.setFullName(testManager().getFullName());
-        request.setPhoneNumber(testManager().getPhoneNumber());
-        request.setZipCode(testManager().getZipCode());
-        request.setCity(testManager().getCity());
-        request.setAddress(testManager().getAddress());
-        return request;
-    }
-
-    private Manager testManager() {
-        Manager manager = new Manager();
-        manager.setId(1L);
-        manager.setUser(testUser());
-        manager.setFullName("Test");
-        manager.setPhoneNumber("123");
-        manager.setZipCode(1234);
-        manager.setCity("City");
-        manager.setAddress("Address");
-        return manager;
-    }
-
-    private User testUser() {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername("test");
-        user.setPassword("password");
-        user.setEmail("test@mail.com");
-        user.setRole(UserRole.ROLE_MANAGER);
-        return user;
+    private RequestPostProcessor withAuth(String username) {
+        return httpBasic(username.toLowerCase(), "password");
     }
 
     private String toJson(Object object) throws JsonProcessingException {
         return objectMapper().writeValueAsString(object);
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerResourceTest.class);
-
-    @Autowired
-    ManagerService managerService;
-
-    @Autowired
-    CreateManagerRequestConverter createManagerRequestConverter;
-
-    @Autowired
-    UpdateManagerRequestConverter updateManagerRequestConverter;
-
-    @Autowired
-    ManagerResponseConverter managerResponseConverter;
-
-    @Autowired
-    WebApplicationContext context;
-
-    private MockMvc mvc;
-
     @Bean
     private ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
+
+    @Autowired
+    private ManagerService managerService;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    private String PATH = Constants.PATH_MANAGER;
 }

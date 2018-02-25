@@ -1,9 +1,16 @@
 package hu.unideb.inf.carrental.commons.domain.manager;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.user.User;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -26,7 +33,8 @@ public class Manager {
         this.id = id;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @OneToOne
     public User getUser() {
         return user;
     }
@@ -35,8 +43,9 @@ public class Manager {
         this.user = user;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.FULL_NAME_MIN_LENGTH,
+            max = Constants.User.FULL_NAME_MAX_LENGTH)
     public String getFullName() {
         return fullName;
     }
@@ -45,8 +54,9 @@ public class Manager {
         this.fullName = fullName;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.PHONE_MIN_LENGTH,
+            max = Constants.User.PHONE_MAX_LENGTH)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -56,6 +66,8 @@ public class Manager {
     }
 
     @NotNull
+    @Min(Constants.User.ZIP_CODE_MIN_VALUE)
+    @Max(Constants.User.ZIP_CODE_MAX_VALUE)
     public Integer getZipCode() {
         return zipCode;
     }
@@ -64,8 +76,9 @@ public class Manager {
         this.zipCode = zipCode;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.CITY_MIN_LENGTH,
+            max = Constants.User.CITY_MAX_LENGTH)
     public String getCity() {
         return city;
     }
@@ -74,8 +87,9 @@ public class Manager {
         this.city = city;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.ADDRESS_MIN_LENGTH,
+            max = Constants.User.ADDRESS_MAX_LENGTH)
     public String getAddress() {
         return address;
     }

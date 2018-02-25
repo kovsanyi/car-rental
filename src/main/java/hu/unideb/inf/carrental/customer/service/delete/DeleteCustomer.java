@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class DeleteCustomer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteCustomer.class);
@@ -26,6 +28,7 @@ public class DeleteCustomer {
         this.deleteUser = deleteUser;
     }
 
+    @Transactional
     public void delete(Customer customer) throws CarInRentException {
         LOGGER.trace("Deleting customer ID {}", customer.getId());
         deleteReservation.deleteCustomer(customer);

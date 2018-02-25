@@ -6,11 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
-    Optional<Customer> findById(Long id);
+    Optional<Customer> findById(long id);
 
     Optional<Customer> findByUser(User user);
 
-    Optional<Customer> findByUserId(Long id);
+    Optional<Customer> findByUserId(long id);
 
     Optional<Customer> findByUserUsername(String username);
 }

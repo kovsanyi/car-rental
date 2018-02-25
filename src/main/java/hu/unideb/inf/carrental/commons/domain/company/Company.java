@@ -1,10 +1,14 @@
 package hu.unideb.inf.carrental.commons.domain.company;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.user.User;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,6 +23,22 @@ public class Company {
     private String city;
     private String address;
 
+    public Company() {
+    }
+
+    public Company(Long id, User user, String name, String email, String fullName, String phoneNumber, Integer zipCode,
+                   String city, String address) {
+        this.id = id;
+        this.user = user;
+        this.name = name;
+        this.email = email;
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.address = address;
+    }
+
     @Id
     @GeneratedValue
     public Long getId() {
@@ -29,6 +49,7 @@ public class Company {
         this.id = id;
     }
 
+    @NotNull
     @OneToOne
     public User getUser() {
         return user;
@@ -38,8 +59,10 @@ public class Company {
         this.user = user;
     }
 
-    @NotEmpty
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Length(min = Constants.User.COMPANY_NAME_MIN_LENGTH,
+            max = Constants.User.COMPANY_NAME_MAX_LENGTH)
+    @Column(unique = true)
     public String getName() {
         return name;
     }
@@ -48,8 +71,10 @@ public class Company {
         this.name = name;
     }
 
+    @NotBlank
     @Email
-    @Column(nullable = false, unique = true)
+    @Length(max = Constants.User.EMAIL_MAX_LENGTH)
+    @Column(unique = true)
     public String getEmail() {
         return email;
     }
@@ -58,8 +83,9 @@ public class Company {
         this.email = email;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.FULL_NAME_MIN_LENGTH,
+            max = Constants.User.FULL_NAME_MAX_LENGTH)
     public String getFullName() {
         return fullName;
     }
@@ -68,8 +94,9 @@ public class Company {
         this.fullName = fullName;
     }
 
-    @NotEmpty
-    @Column(nullable = false)
+    @NotBlank
+    @Length(min = Constants.User.PHONE_MIN_LENGTH,
+            max = Constants.User.PHONE_MAX_LENGTH)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -79,6 +106,8 @@ public class Company {
     }
 
     @NotNull
+    @Min(Constants.User.ZIP_CODE_MIN_VALUE)
+    @Max(Constants.User.ZIP_CODE_MAX_VALUE)
     public Integer getZipCode() {
         return zipCode;
     }
@@ -87,8 +116,9 @@ public class Company {
         this.zipCode = zipCode;
     }
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
+    @Length(min = Constants.User.CITY_MIN_LENGTH,
+            max = Constants.User.CITY_MAX_LENGTH)
     public String getCity() {
         return city;
     }
@@ -97,8 +127,9 @@ public class Company {
         this.city = city;
     }
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
+    @Length(min = Constants.User.ADDRESS_MIN_LENGTH,
+            max = Constants.User.ADDRESS_MAX_LENGTH)
     public String getAddress() {
         return address;
     }
@@ -117,8 +148,8 @@ public class Company {
         if (!user.equals(company.user)) return false;
         if (!name.equals(company.name)) return false;
         if (!email.equals(company.email)) return false;
-        if (!phoneNumber.equals(company.phoneNumber)) return false;
         if (!fullName.equals(company.fullName)) return false;
+        if (!phoneNumber.equals(company.phoneNumber)) return false;
         if (!zipCode.equals(company.zipCode)) return false;
         if (!city.equals(company.city)) return false;
         return address.equals(company.address);
@@ -129,8 +160,8 @@ public class Company {
         int result = user.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + email.hashCode();
-        result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + fullName.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
         result = 31 * result + city.hashCode();
         result = 31 * result + address.hashCode();
@@ -144,8 +175,8 @@ public class Company {
                 ", user=" + user +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +
                 ", city='" + city + '\'' +
                 ", address='" + address + '\'' +

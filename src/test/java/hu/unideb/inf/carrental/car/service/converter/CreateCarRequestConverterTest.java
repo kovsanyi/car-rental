@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static hu.unideb.inf.carrental.commons.constant.Constants.Car.YEAR_MIN_VALUE;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class CreateCarRequestConverterTest {
@@ -17,8 +19,19 @@ public class CreateCarRequestConverterTest {
     CreateCarRequestConverter createCarRequestConverter;
 
     @Test
-    public void from() throws Exception {
-        CreateCarRequest createCarRequest = new CreateCarRequest(1L, CarCategory.Crossover, "Brand", "Model", 1, 1, FuelType.Petrol, 1.0F, 1, 1, 1);
+    public void from() {
+        CreateCarRequest createCarRequest = new CreateCarRequest(
+                1L,
+                CarCategory.SUV,
+                "Brand",
+                "Model",
+                1,
+                YEAR_MIN_VALUE,
+                FuelType.Petrol,
+                1.0F,
+                1,
+                1,
+                1);
         Car car = createCarRequestConverter.from(createCarRequest);
         assert car.getId() == null;
         assert car.getSite().getId().equals(createCarRequest.getSiteId());

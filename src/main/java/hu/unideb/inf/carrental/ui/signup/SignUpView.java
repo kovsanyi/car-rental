@@ -217,8 +217,7 @@ public class SignUpView extends VerticalLayout implements View {
                             email.getValue(),
                             companyName.getValue(),
                             companyEmail.getValue(),
-                            fullName.getValue(),
-                            phoneNumber.getValue(),
+                            fullName.getValue(), phoneNumber.getValue(),
                             Integer.parseInt(zipCode.getValue()),
                             city.getValue(),
                             address.getValue()

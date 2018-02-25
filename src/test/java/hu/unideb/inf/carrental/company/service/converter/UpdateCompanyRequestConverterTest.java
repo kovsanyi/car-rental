@@ -16,7 +16,7 @@ public class UpdateCompanyRequestConverterTest {
 
     @Test
     public void from() throws Exception {
-        UpdateCompanyRequest createCompanyRequest = new UpdateCompanyRequest("Company", "company@mail.com", "123", "Company Owner", 123, "Debrecen", "Kassai");
+        UpdateCompanyRequest createCompanyRequest = new UpdateCompanyRequest("Company", "company@mail.com", "Company Owner", "123", 123, "Debrecen", "Kassai");
         Company company = updateCompanyRequestConverter.from(createCompanyRequest);
         assert company.getUser() == null;
         assert company.getId() == null;

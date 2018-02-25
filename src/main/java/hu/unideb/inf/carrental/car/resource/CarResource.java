@@ -2,6 +2,7 @@ package hu.unideb.inf.carrental.car.resource;
 
 import hu.unideb.inf.carrental.car.resource.model.CreateCarRequest;
 import hu.unideb.inf.carrental.car.service.CarService;
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.CarCategory;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.FuelType;
 import hu.unideb.inf.carrental.commons.exception.CarInRentException;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/car")
+@RequestMapping(Constants.PATH_CAR)
 public class CarResource {
     private final CarService carService;
 
@@ -26,45 +27,45 @@ public class CarResource {
         this.carService = carService;
     }
 
-    @PostMapping("/save")
+    @PostMapping(SAVE)
     public ResponseEntity<?> save(@Valid @RequestBody CreateCarRequest createCarRequest)
             throws UnauthorizedAccessException {
         return new ResponseEntity<>(new CreatedResponse(carService.save(createCarRequest)), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(DELETE)
     public ResponseEntity<?> delete(@PathVariable("id") long id)
             throws NotFoundException, UnauthorizedAccessException, CarInRentException {
         carService.delete(id);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping(GET_BY_ID)
     public ResponseEntity<?> getById(@PathVariable("id") long id) throws NotFoundException {
         return new ResponseEntity<>(carService.getById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/companyId/{companyId}")
-    public ResponseEntity<?> getByCompanyId(@PathVariable("companyId") long siteId) {
+    @GetMapping(GET_BY_COMPANY_ID)
+    public ResponseEntity<?> getByCompanyId(@PathVariable("companyId") long siteId) throws NotFoundException {
         return new ResponseEntity<>(carService.getByCompanyId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/companyName/{companyName}")
-    public ResponseEntity<?> getByCompanyId(@PathVariable("companyName") String companyName) {
+    @GetMapping(GET_BY_COMPANY_NAME)
+    public ResponseEntity<?> getByCompanyId(@PathVariable("companyName") String companyName) throws NotFoundException {
         return new ResponseEntity<>(carService.getByCompanyName(companyName), HttpStatus.OK);
     }
 
-    @GetMapping("/siteId/{siteId}")
-    public ResponseEntity<?> getBySiteId(@PathVariable("siteId") long siteId) {
+    @GetMapping(GET_BY_SITE_ID)
+    public ResponseEntity<?> getBySiteId(@PathVariable("siteId") long siteId) throws NotFoundException {
         return new ResponseEntity<>(carService.getBySiteId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/siteId/{siteId}/available")
-    public ResponseEntity<?> getAvailableBySiteId(@PathVariable("siteId") long siteId) {
+    @GetMapping(GET_AVAILABLE_BY_SITE_ID)
+    public ResponseEntity<?> getAvailableBySiteId(@PathVariable("siteId") long siteId) throws NotFoundException {
         return new ResponseEntity<>(carService.getAvailableBySiteId(siteId), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @GetMapping(SEARCH)
     public ResponseEntity<?> getByParams(
             @RequestParam(value = "category", required = false) CarCategory category,
             @RequestParam(value = "brand", required = false) String brand,
@@ -76,28 +77,42 @@ public class CarResource {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/category/all")
+    @GetMapping(GET_ALL_CAR_CATEGORY)
     public ResponseEntity<?> getAllCarCategory() {
         return new ResponseEntity<>(carService.getAllCarCategory(), HttpStatus.OK);
     }
 
-    @GetMapping("/fuelType/all")
+    @GetMapping(GET_ALL_FUEL_TYPE)
     public ResponseEntity<?> getAllFuelType() {
         return new ResponseEntity<>(carService.getAllFuelType(), HttpStatus.OK);
     }
 
-    @GetMapping("/category/used")
+    @GetMapping(GET_USED_CAR_CATEGORIES)
     public ResponseEntity<?> getUsedCarCategories() {
         return new ResponseEntity<>(carService.getUsedCarCategories(), HttpStatus.OK);
     }
 
-    @GetMapping("/category/{carCategory}/brand")
+    @GetMapping(GET_USED_BRANDS_BY_CAR_CATEGORY)
     public ResponseEntity<?> getUsedBrandsByCategory(@PathVariable("carCategory") CarCategory category) {
         return new ResponseEntity<>(carService.getUsedBrandsByCategory(category), HttpStatus.OK);
     }
 
-    @GetMapping("/brand/all")
+    @GetMapping(GET_USED_BRANDS)
     public ResponseEntity<?> getUsedBrands() {
         return new ResponseEntity<>(carService.getUsedBrands(), HttpStatus.OK);
     }
+
+    public static final String SAVE = "/save";
+    public static final String DELETE = "/delete/{id}";
+    public static final String GET_BY_ID = "/id/{id}";
+    public static final String GET_BY_COMPANY_ID = "/companyId/{companyId}";
+    public static final String GET_BY_COMPANY_NAME = "/companyName/{companyName}";
+    public static final String GET_BY_SITE_ID = "/siteId/{siteId}";
+    public static final String GET_AVAILABLE_BY_SITE_ID = "/siteId/{siteId}/available";
+    public static final String SEARCH = "/search";
+    public static final String GET_ALL_CAR_CATEGORY = "/category/all";
+    public static final String GET_ALL_FUEL_TYPE = "/fuelType/all";
+    public static final String GET_USED_CAR_CATEGORIES = "/category/used";
+    public static final String GET_USED_BRANDS_BY_CAR_CATEGORY = "/category/{carCategory}/brand";
+    public static final String GET_USED_BRANDS = "/brand/all";
 }
