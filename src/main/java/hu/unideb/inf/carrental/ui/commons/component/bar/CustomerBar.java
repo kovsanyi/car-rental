@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.commons.bar;
+package hu.unideb.inf.carrental.ui.commons.component.bar;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Sizeable;

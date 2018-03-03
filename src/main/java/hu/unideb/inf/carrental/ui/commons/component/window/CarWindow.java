@@ -9,24 +9,46 @@ import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.CarCategory;
 import hu.unideb.inf.carrental.commons.domain.car.enumeration.FuelType;
+import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
+import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.CarRentalUI;
+import hu.unideb.inf.carrental.ui.cars.CarsView;
+import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
+import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
+import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 
 import java.util.HashMap;
 import java.util.Map;
 
 //TODO fuel cons. validate
 public class CarWindow extends Window {
+    public enum Type {
+        COMPANY,
+        MANAGER
+    }
 
-    public CarWindow(SiteService siteService, CarService carService) {
+    public CarWindow(Type type, SiteService siteService, CarService carService) {
         this.siteService = siteService;
         this.carService = carService;
 
         siteWithID = new HashMap<>();
         componentWithValidation = new HashMap<>();
 
-        siteService.getByCompany().forEach(e -> siteWithID.put(e.getCity() + " - " + e.getAddress(), e.getId()));
+        switch (type) {
+            case COMPANY:
+                siteService.getByCompany().forEach(e -> siteWithID.put(e.getCity() + " - " + e.getAddress(), e.getId()));
+                break;
+            case MANAGER:
+                try {
+                    SiteResponse siteResponse = siteService.getByManager();
+                    siteWithID.put(siteResponse.getCity() + " - " + siteResponse.getAddress(), siteResponse.getId());
+                } catch (NotFoundException e) {
+                    UIUtils.showNotification("Error, message: " + e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                }
+                break;
+        }
 
         setCaption("Add a car");
         setSizeUndefined();
@@ -212,6 +234,7 @@ public class CarWindow extends Window {
                 Notification.show(brand.getValue() + " " + model.getValue()
                         + " successfully added to " + site.getSelectedItem().toString());
                 close();
+                CarRentalEventBus.post(new CarRentalEvent.RefreshRequestEvent(CarsView.VIEW_NAME));
             } catch (UnauthorizedAccessException e) {
                 Notification.show("Unauthorized access", "You do not have right to save a car!",
                         Notification.Type.ERROR_MESSAGE);

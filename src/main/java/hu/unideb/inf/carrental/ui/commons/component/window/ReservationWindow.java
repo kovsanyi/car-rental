@@ -10,6 +10,7 @@ import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
 import hu.unideb.inf.carrental.reservation.resource.model.CreateReservationRequest;
 import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
+import hu.unideb.inf.carrental.ui.CarRentalUI;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class ReservationWindow extends Window {
         receiveDate = buildReceiveDate();
         returnDate = buildReturnDate();
         price = buildPrice();
+        content = buildContent();
 
         setCaption("Make a reservation");
         setWidth(320.f, Unit.PIXELS);
@@ -38,7 +40,7 @@ public class ReservationWindow extends Window {
         setResizable(false);
         setDraggable(false);
         center();
-        setContent(buildContent());
+        setContent(content);
     }
 
     private AbstractLayout buildContent() {
@@ -109,8 +111,7 @@ public class ReservationWindow extends Window {
         final DateField receiveDate = new DateField("Receive date");
         receiveDate.setWidth(100.f, Unit.PERCENTAGE);
         receiveDate.setValue(LocalDate.now());
-        //receiveDate.setDateFormat(Constants.DATE_FORMAT);
-        receiveDate.addValueChangeListener(e -> refreshPrice());
+        receiveDate.addValueChangeListener(e -> refreshPrice(receiveDate));
         return receiveDate;
     }
 
@@ -118,8 +119,7 @@ public class ReservationWindow extends Window {
         final DateField returnDate = new DateField("Return date");
         returnDate.setWidth(100.f, Unit.PERCENTAGE);
         returnDate.setValue(LocalDate.now());
-        //returnDate.setDateFormat(Constants.DATE_FORMAT);
-        returnDate.addValueChangeListener(e -> refreshPrice());
+        returnDate.addValueChangeListener(e -> refreshPrice(returnDate));
         return returnDate;
     }
 
@@ -153,29 +153,32 @@ public class ReservationWindow extends Window {
                     receiveDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     returnDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             ));
+            CarRentalUI.getCurrent().getPage().reload();
+        } catch (CarInRentException | ReservationCollisionException | InvalidInputException e) {
+            UIUtils.showNotification(e.getMessage(), Notification.Type.WARNING_MESSAGE);
         } catch (NotFoundException e) {
-            UIUtils.showNotification("The selected car can not be found, it may have been deleted",
-                    Notification.Type.WARNING_MESSAGE);
-        } catch (CarInRentException e) {
-            UIUtils.showNotification("The selected car is already rented",
-                    Notification.Type.WARNING_MESSAGE);
-        } catch (ReservationCollisionException e) {
-            UIUtils.showNotification("The car has already been rented for that period",
-                    Notification.Type.WARNING_MESSAGE);
-        } catch (InvalidInputException e) {
-            UIUtils.showNotification(e.getMessage(),
-                    Notification.Type.WARNING_MESSAGE);
+            UIUtils.showNotification(e.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
     }
 
-    private void refreshPrice() {
+    private void refreshPrice(DateField dateField) {
+        if (dateField.getValue().isBefore(LocalDate.now())) {
+            dateField.setValue(LocalDate.now());
+            UIUtils.showNotification("Invalid date can not be selected!", Notification.Type.WARNING_MESSAGE);
+        }
+        if (receiveDate.getValue().isAfter(returnDate.getValue())) {
+            receiveDate.setValue(LocalDate.now());
+            returnDate.setValue(LocalDate.now());
+            UIUtils.showNotification("Invalid date can not be selected!", Notification.Type.WARNING_MESSAGE);
+        }
         long priceValue = (DAYS.between(receiveDate.getValue(), returnDate.getValue()) + 1) * carResponse.getPrice();
         price.setValue(String.format("Price totally: %s %s", priceValue, "HUF"));
     }
 
-    private DateField receiveDate;
-    private DateField returnDate;
-    private Label price;
+    private final DateField receiveDate;
+    private final DateField returnDate;
+    private final Label price;
+    private final AbstractLayout content;
 
     private final CarResponse carResponse;
     private final SiteResponse siteResponse;

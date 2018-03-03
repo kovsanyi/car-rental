@@ -11,8 +11,8 @@ import hu.unideb.inf.carrental.carimage.service.CarImageService;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.ui.carsearch.content.CarSearchContent;
-import hu.unideb.inf.carrental.ui.commons.bar.CustomerBar;
-import hu.unideb.inf.carrental.ui.commons.menu.CarRentalMenu;
+import hu.unideb.inf.carrental.ui.commons.component.bar.CustomerBar;
+import hu.unideb.inf.carrental.ui.commons.component.menu.CarRentalMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @UIScope

@@ -13,9 +13,9 @@ import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.ui.car.content.CompanyCarContent;
 import hu.unideb.inf.carrental.ui.car.content.CustomerCarContent;
-import hu.unideb.inf.carrental.ui.commons.bar.CustomerBar;
-import hu.unideb.inf.carrental.ui.commons.bar.CompanyBar;
-import hu.unideb.inf.carrental.ui.commons.menu.CarRentalMenu;
+import hu.unideb.inf.carrental.ui.commons.component.bar.CustomerBar;
+import hu.unideb.inf.carrental.ui.commons.component.bar.CompanyBar;
+import hu.unideb.inf.carrental.ui.commons.component.menu.CarRentalMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

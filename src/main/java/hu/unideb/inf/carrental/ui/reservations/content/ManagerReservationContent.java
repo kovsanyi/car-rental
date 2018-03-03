@@ -35,7 +35,7 @@ public class ManagerReservationContent extends ReservationContent {
         accordion.setTabCaptionsAsHtml(true);
 
         try {
-            Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getAllBySiteId(
+            Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getActiveBySiteId(
                     siteService.getByManager().getId()));
             activeReservations.addSelectionListener(e -> {
                 if (!activeReservations.getSelectedItems().isEmpty()) {
@@ -54,11 +54,16 @@ public class ManagerReservationContent extends ReservationContent {
                     String.format("%s - %s", "Reservations", bold("Closed")));
             accordion.addTab(buildGrid(reservationService.getAllBySiteId(siteService.getByManager().getId())),
                     String.format("%s - %s", "Reservations", bold("All")));
-        } catch (NotFoundException | UnauthorizedAccessException e) {
-            e.printStackTrace();
-        }
 
-        getBody().addComponent(accordion);
+            getBody().addComponent(accordion);
+        } catch (NotFoundException e) {
+            Label noCars = new Label("No managed site!");
+            noCars.addStyleName(ValoTheme.LABEL_H1);
+            getBody().addComponent(noCars);
+            ((VerticalLayout) getBody()).setComponentAlignment(noCars, Alignment.MIDDLE_CENTER);
+        } catch (UnauthorizedAccessException e) {
+            UIUtils.showNotification(e.getMessage(), Notification.Type.WARNING_MESSAGE);
+        }
     }
 
     private Button buildMarkAsClosedButton() {
@@ -82,6 +87,7 @@ public class ManagerReservationContent extends ReservationContent {
                         "You do not have right to save a car!",
                         Notification.Type.ERROR_MESSAGE);
             } finally {
+                markAsClosed.setEnabled(false);
                 refreshBody();
             }
         });

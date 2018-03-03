@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.commons.bar;
+package hu.unideb.inf.carrental.ui.commons.component.bar;
 
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
@@ -10,11 +10,11 @@ public class CompanyBar extends VerticalLayout {
 
     public CompanyBar() {
         setWidth(100.f, Unit.PERCENTAGE);
-        setHeight(310.f, Unit.PIXELS);
+        setHeight(200.f, Unit.PIXELS);
         setMargin(false);
         setSpacing(false);
         setId("bar");
-        setDefaultComponentAlignment(Alignment.TOP_CENTER);
+        setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         setStyleName("company-bar");
 
         addComponents(
@@ -27,10 +27,10 @@ public class CompanyBar extends VerticalLayout {
         logo.setWidth(Constants.Size.WIDTH, Unit.PIXELS);
         logo.setMargin(false);
         logo.setSpacing(false);
-        logo.setDefaultComponentAlignment(Alignment.TOP_LEFT);
+        logo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
 
         final Label title = new Label("Car Rental");
-        title.setHeight(100.f, Unit.PERCENTAGE);
+        title.setSizeUndefined();
         title.setId("logo");
 
         logo.addComponent(title);

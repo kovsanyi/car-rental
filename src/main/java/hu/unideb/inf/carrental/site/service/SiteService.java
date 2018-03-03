@@ -166,6 +166,23 @@ public class SiteService {
     }
 
     /**
+     * Deletes a manager from the specified site.<br>
+     * <b>This method can only be called by a company owner.</b>
+     *
+     * @param siteId ID of the site
+     * @throws UnauthorizedAccessException if the logged in user has no right to modify the given site
+     * @throws NotFoundException           if the site ID is invalid
+     */
+    @Secured("ROLE_COMPANY")
+    public void deleteManagerBySiteId(long siteId) throws UnauthorizedAccessException, NotFoundException {
+        LOGGER.info("Deleting manager of site ID {}", siteId);
+        Site site = siteRepository.findById(siteId).orElseThrow(() -> new NotFoundException(Constants.SITE_NOT_FOUND));
+        siteValidator.validate(site);
+        site.setManager(null);
+        siteRepository.save(site);
+    }
+
+    /**
      * Returns the details of all the sites connected to logged in company (owner).<br>
      * <b>This method can only be called by a company owner.</b>
      *

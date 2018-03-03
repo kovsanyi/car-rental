@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.site.content;
+package hu.unideb.inf.carrental.ui.commons.content.site;
 
 import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.GridLayout;
@@ -53,6 +53,10 @@ public class SiteContent extends CarRentalContent {
                 keyEmail, valueEmail
         );
         return details;
+    }
+
+    public SiteResponse getSiteResponse() {
+        return siteResponse;
     }
 
     @Override

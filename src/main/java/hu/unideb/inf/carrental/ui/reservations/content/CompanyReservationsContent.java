@@ -74,6 +74,7 @@ public class CompanyReservationsContent extends ReservationContent {
                         "You do not have right to save a car!",
                         Notification.Type.ERROR_MESSAGE);
             } finally {
+                markAsClosed.setEnabled(false);
                 refreshBody();
             }
         });

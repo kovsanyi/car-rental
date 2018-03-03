@@ -1,10 +1,7 @@
 package hu.unideb.inf.carrental.ui.sites.content;
 
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.AbstractLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.commons.component.item.SiteItem;
@@ -37,6 +34,14 @@ public class CompanySitesContent extends CarRentalContent {
         siteService.getByCompany().stream()
                 .map(SiteItem::new)
                 .forEach(getBody()::addComponent);
+
+        if (siteService.getByCompany().isEmpty()) {
+            Label noCars = new Label("No sites!");
+            noCars.addStyleName(ValoTheme.LABEL_H1);
+
+            ((GridLayout) getBody()).setColumns(1);
+            getBody().addComponent(noCars);
+        }
     }
 
     @Override

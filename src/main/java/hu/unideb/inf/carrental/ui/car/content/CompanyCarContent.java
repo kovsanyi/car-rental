@@ -12,7 +12,7 @@ import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
 import hu.unideb.inf.carrental.ui.CarRentalUI;
 import hu.unideb.inf.carrental.ui.commons.content.car.CarContent;
-import hu.unideb.inf.carrental.ui.commons.uploader.ImageUploader;
+import hu.unideb.inf.carrental.ui.commons.component.uploader.ImageUploader;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 
 import java.util.List;

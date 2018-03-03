@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.commons.menu;
+package hu.unideb.inf.carrental.ui.commons.component.menu;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.MenuBar;

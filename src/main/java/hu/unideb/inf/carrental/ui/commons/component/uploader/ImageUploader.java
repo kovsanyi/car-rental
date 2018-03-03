@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.commons.uploader;
+package hu.unideb.inf.carrental.ui.commons.component.uploader;
 
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Upload;

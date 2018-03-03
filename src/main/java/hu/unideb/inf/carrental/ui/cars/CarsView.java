@@ -13,8 +13,8 @@ import hu.unideb.inf.carrental.company.service.CompanyService;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.cars.content.CompanyCarsContent;
 import hu.unideb.inf.carrental.ui.cars.content.ManagerCarsContent;
-import hu.unideb.inf.carrental.ui.commons.bar.CompanyBar;
-import hu.unideb.inf.carrental.ui.commons.menu.CarRentalMenu;
+import hu.unideb.inf.carrental.ui.commons.component.bar.CompanyBar;
+import hu.unideb.inf.carrental.ui.commons.component.menu.CarRentalMenu;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

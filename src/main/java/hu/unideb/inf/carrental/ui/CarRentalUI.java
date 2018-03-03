@@ -17,10 +17,12 @@ import hu.unideb.inf.carrental.carimage.service.CarImageService;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
+import hu.unideb.inf.carrental.manager.service.ManagerService;
 import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.carsearch.CarSearchView;
 import hu.unideb.inf.carrental.ui.commons.component.window.CarWindow;
+import hu.unideb.inf.carrental.ui.commons.component.window.ManagerWindow;
 import hu.unideb.inf.carrental.ui.commons.component.window.ReservationWindow;
 import hu.unideb.inf.carrental.ui.commons.component.window.SiteWindow;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.*;
@@ -32,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.annotation.WebServlet;
 import java.util.Locale;
+import java.util.Objects;
 
 @Title("Car Rental")
 @Theme("carrental")
@@ -66,6 +69,11 @@ public class CarRentalUI extends UI {
     }
 
     @Subscribe
+    private void openSetManagerWindow(OpenManagerWindow openManagerWindow) {
+        getCurrent().addWindow(new ManagerWindow(managerService, siteService, openManagerWindow.getSiteID()));
+    }
+
+    @Subscribe
     private void openReservationWindow(OpenReservationWindow openReservationWindow) {
         try {
             CarResponse carResponse = carService.getById(openReservationWindow.getCarID());
@@ -81,7 +89,7 @@ public class CarRentalUI extends UI {
 
     @Subscribe
     private void openCarWindowForAdding(OpenCarWindowForAddingEvent openCarWindowForAddingEvent) {
-        getCurrent().addWindow(new CarWindow(siteService, carService));
+        getCurrent().addWindow(new CarWindow(openCarWindowForAddingEvent.getType(), siteService, carService));
     }
 
     @Subscribe
@@ -91,7 +99,15 @@ public class CarRentalUI extends UI {
 
     @Subscribe
     private void openSiteWindowForEditing(OpenSiteWindowForEditingEvent openSiteWindowForEditingEvent) {
-        getCurrent().addWindow(new SiteWindow(siteService));
+        getCurrent().addWindow(new SiteWindow(siteService, openSiteWindowForEditingEvent.getSiteResponse().getId()));
+    }
+
+    @Subscribe
+    private void refreshRequest(RefreshRequestEvent refreshRequestEvent) {
+        getPage().reload();
+        if (Objects.nonNull(refreshRequestEvent.getNavigateTo())) {
+            getNavigator().navigateTo(refreshRequestEvent.getNavigateTo());
+        }
     }
 
     @Subscribe
@@ -106,12 +122,13 @@ public class CarRentalUI extends UI {
     }
 
     @Autowired
-    public CarRentalUI(SpringViewProvider viewProvider, SiteService siteService, CarService carService, CarImageService carImageService, ReservationService reservationService) {
+    public CarRentalUI(SpringViewProvider viewProvider, SiteService siteService, CarService carService, CarImageService carImageService, ReservationService reservationService, ManagerService managerService) {
         this.viewProvider = viewProvider;
         this.siteService = siteService;
         this.carService = carService;
         this.carImageService = carImageService;
         this.reservationService = reservationService;
+        this.managerService = managerService;
 
         this.carRentalEventBus = new CarRentalEventBus();
     }
@@ -122,6 +139,8 @@ public class CarRentalUI extends UI {
     private final CarService carService;
     private final CarImageService carImageService;
     private final ReservationService reservationService;
-
+    private final ManagerService managerService;
     private final CarRentalEventBus carRentalEventBus;
+
+    private final static long serialVersionUID = 2411746944547008579L;
 }

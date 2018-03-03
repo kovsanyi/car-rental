@@ -30,10 +30,12 @@ public abstract class CarRentalContent extends VerticalLayout {
         header = buildHeader();
         body = buildBody();
         body.setId("body");
+        footer = buildFooter();
 
         content.addComponents(
                 header,
-                body
+                body,
+                footer
         );
         return content;
     }
@@ -52,6 +54,13 @@ public abstract class CarRentalContent extends VerticalLayout {
     }
 
     protected abstract AbstractLayout buildBody();
+
+    private HorizontalLayout buildFooter() {
+        final HorizontalLayout footer = new HorizontalLayout();
+        footer.setWidth(100.f, Unit.PERCENTAGE);
+        footer.setHeight(100.f, Unit.PIXELS);
+        return footer;
+    }
 
     private Label buildTitle() {
         final Label title = new Label(titleValue);
@@ -88,6 +97,7 @@ public abstract class CarRentalContent extends VerticalLayout {
 
     private HorizontalLayout header;
     private AbstractLayout body;
+    private HorizontalLayout footer;
 
     private final String titleValue;
 }

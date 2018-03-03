@@ -46,7 +46,7 @@ public abstract class CarContent extends CarRentalContent {
         final Label keySeatNumber = buildKeyLabel("Seat number:");
         final Label keyTrunkCapacity = buildKeyLabel("Trunk capacity:");
         final Label keyFuelType = buildKeyLabel("Fuel type:");
-        final Label keyFuelConsumption = buildKeyLabel("Fuel Consumption:");
+        final Label keyFuelConsumption = buildKeyLabel("Fuel consumption:");
         final Label keyTankCapacity = buildKeyLabel("Tank capacity:");
         final Label keyPrice = buildKeyLabel("Price:");
 
@@ -86,8 +86,7 @@ public abstract class CarContent extends CarRentalContent {
 
         final ImageViewer imageViewer = new ImageViewer();
         imageViewer.setSizeFull();
-        imageViewer.setAnimationEnabled(false);
-        imageViewer.setSideImageRelativeWidth(0.7f);
+        imageViewer.setAnimationEnabled(true);
         imageViewer.setHeight(358.f, Unit.PIXELS);
 
         //TODO file name must be added!
