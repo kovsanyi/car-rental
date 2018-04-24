@@ -53,7 +53,7 @@ public class CarView extends VerticalLayout implements View {
                                 carService, carImageService));
                         break;
                     case ROLE_CUSTOMER:
-                        addComponent(new CustomerBar(carService));
+                        addComponent(new CustomerBar());
                         addComponent(new CarRentalMenu());
                         addComponent(new CustomerCarContent(carResponse, carImageService.getAllByCarId(carID)));
                         break;

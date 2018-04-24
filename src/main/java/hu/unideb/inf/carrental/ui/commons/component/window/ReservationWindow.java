@@ -110,6 +110,7 @@ public class ReservationWindow extends Window {
     private DateField buildReceiveDate() {
         final DateField receiveDate = new DateField("Receive date");
         receiveDate.setWidth(100.f, Unit.PERCENTAGE);
+        receiveDate.setDateFormat("yyyy-MM-dd");
         receiveDate.setValue(LocalDate.now());
         receiveDate.addValueChangeListener(e -> refreshPrice(receiveDate));
         return receiveDate;
@@ -118,6 +119,7 @@ public class ReservationWindow extends Window {
     private DateField buildReturnDate() {
         final DateField returnDate = new DateField("Return date");
         returnDate.setWidth(100.f, Unit.PERCENTAGE);
+        returnDate.setDateFormat("yyyy-MM-dd");
         returnDate.setValue(LocalDate.now());
         returnDate.addValueChangeListener(e -> refreshPrice(returnDate));
         return returnDate;

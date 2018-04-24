@@ -130,7 +130,7 @@ public class ManagerService {
      * @throws NotFoundException if the username does not identify a manager
      */
     public ManagerResponse getByUsername(String username) throws NotFoundException {
-        LOGGER.info("Providing manager details by ID");
+        LOGGER.info("Providing manager details by username");
         return managerResponseConverter.from(managerRepository.findByUserUsername(username)
                 .orElseThrow(() -> new NotFoundException(Constants.MANAGER_NOT_FOUND)));
     }

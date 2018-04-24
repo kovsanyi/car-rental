@@ -1,6 +1,7 @@
 package hu.unideb.inf.carrental.ui.commons.component.item;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import hu.unideb.inf.carrental.site.resource.model.SiteResponse;
@@ -9,8 +10,7 @@ import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 import hu.unideb.inf.carrental.ui.site.SiteView;
 
-import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildKeyLabel;
-import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.buildValueLabel;
+import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.*;
 
 public final class SiteItem extends Panel {
 
@@ -59,6 +59,7 @@ public final class SiteItem extends Panel {
         keyOpeningHours.setDescription("Opening hours");
         final Label keyPhoneNumber = buildKeyLabel("Phone:");
         final Label keyEmail = buildKeyLabel("Email:");
+        final Label keyManager = buildKeyLabel("Manager:");
 
         final Label valueZipCode = buildValueLabel(siteResponse.getZipCode().toString());
         final Label valueCity = buildValueLabel(siteResponse.getCity());
@@ -66,6 +67,10 @@ public final class SiteItem extends Panel {
         final Label valueOpeningHours = buildValueLabel(siteResponse.getOpeningHours());
         final Label valuePhoneNumber = buildValueLabel(siteResponse.getPhoneNumber());
         final Label valueEmail = buildValueLabel(siteResponse.getEmail());
+        final Label valueManager = buildValueLabel(
+                siteResponse.getManagerUserUsername() == null ? italic("none") : siteResponse.getManagerUserUsername(),
+                ContentMode.HTML
+        );
 
         details.addComponents(
                 keyZipCode, valueZipCode,
@@ -73,7 +78,8 @@ public final class SiteItem extends Panel {
                 keyAddress, valueAddress,
                 keyOpeningHours, valueOpeningHours,
                 keyPhoneNumber, valuePhoneNumber,
-                keyEmail, valueEmail
+                keyEmail, valueEmail,
+                keyManager, valueManager
         );
         return details;
     }

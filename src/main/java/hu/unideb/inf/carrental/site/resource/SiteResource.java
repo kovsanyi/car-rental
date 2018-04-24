@@ -31,14 +31,14 @@ public class SiteResource {
     public ResponseEntity<?> update(@Valid @RequestBody UpdateSiteRequest updateSiteRequest)
             throws NotFoundException, UnauthorizedAccessException {
         siteService.update(updateSiteRequest);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE)
     public ResponseEntity<?> delete(@PathVariable("id") long id)
             throws NotFoundException, UnauthorizedAccessException, CollisionException {
         siteService.delete(id);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @PutMapping(SET_MANAGER_BY_ID)

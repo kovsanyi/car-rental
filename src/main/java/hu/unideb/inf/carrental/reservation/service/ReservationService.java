@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -50,6 +51,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.customer.service.CustomerService
      */
     @Secured("ROLE_CUSTOMER")
+    @Transactional
     public long reserve(CreateReservationRequest createReservationRequest)
             throws NotFoundException, CarInRentException, ReservationCollisionException, InvalidInputException {
         LOGGER.info("Creating reservation");
@@ -96,6 +98,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.customer.service.CustomerService
      */
     @Secured("ROLE_CUSTOMER")
+    @Transactional
     public ReservationResponse getActiveByCustomer() throws NotFoundException {
         LOGGER.info("Providing active reservation to customer");
         return reservationResponseConverter.from(reservationRepository.findByCustomerAndReturnedDateIsNull(getCustomer())
@@ -110,6 +113,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.customer.service.CustomerService
      */
     @Secured("ROLE_CUSTOMER")
+    @Transactional
     public List<ReservationResponse> getClosedByCustomer() {
         LOGGER.info("Providing all closed reservation to customer");
         return reservationRepository.findByCustomerAndReturnedDateIsNotNull(getCustomer()).stream()
@@ -124,6 +128,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.customer.service.CustomerService
      */
     @Secured("ROLE_CUSTOMER")
+    @Transactional
     public List<ReservationResponse> getAllByCustomer() {
         LOGGER.info("Providing all reservation to customer");
         return reservationRepository.findByCustomer(getCustomer()).stream()
@@ -142,8 +147,10 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.site.service.SiteService
      */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
+    @Transactional
     public List<ReservationResponse> getActiveBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
         LOGGER.info("Providing active reservations of site ID {}", siteId);
+        siteValidator.validate(siteId);
         return reservationRepository.findByCarSiteAndReturnedDateIsNull(getSite(siteId)).stream()
                 .map(reservationResponseConverter::from).collect(Collectors.toList());
     }
@@ -160,6 +167,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.site.service.SiteService
      */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
+    @Transactional
     public List<ReservationResponse> getClosedBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
         LOGGER.info("Providing closed reservations of site ID {}", siteId);
         return reservationRepository.findByCarSiteAndReturnedDateIsNotNull(getSite(siteId)).stream()
@@ -178,6 +186,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.site.service.SiteService
      */
     @Secured({"ROLE_COMPANY", "ROLE_MANAGER"})
+    @Transactional
     public List<ReservationResponse> getAllBySiteId(long siteId) throws NotFoundException, UnauthorizedAccessException {
         LOGGER.info("Providing all reservation of site ID {}", siteId);
         return reservationRepository.findByCarSite(getSite(siteId)).stream()
@@ -192,6 +201,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.company.service.CompanyService
      */
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getActiveByCompany() {
         LOGGER.info("Providing active reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNull(getCompany()).stream()
@@ -206,6 +216,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.company.service.CompanyService
      */
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getClosedByCompany() {
         LOGGER.info("Providing closed reservations of company");
         return reservationRepository.findByCompanyAndReturnedDateIsNotNull(getCompany()).stream()
@@ -220,6 +231,7 @@ public class ReservationService {
      * @see hu.unideb.inf.carrental.company.service.CompanyService
      */
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<ReservationResponse> getAllByCompany() {
         LOGGER.info("Providing all reservation of company");
         return reservationRepository.findByCompany(getCompany()).stream()

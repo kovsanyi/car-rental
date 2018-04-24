@@ -22,27 +22,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final UserValidator userValidator;
-    private final UserRepository userRepository;
-
-    private final UserResponseConverter userResponseConverter;
-
-    @Autowired
-    public UserService(BCryptPasswordEncoder passwordEncoder, UserValidator userValidator,
-                       UserRepository userRepository, UserResponseConverter userResponseConverter) {
-        this.passwordEncoder = passwordEncoder;
-        this.userValidator = userValidator;
-        this.userRepository = userRepository;
-        this.userResponseConverter = userResponseConverter;
-    }
 
     public void save(User user) throws EmailAlreadyInUseException, UsernameAlreadyInUseException {
         logger.info("Saving user");
-        userValidator.validate(user);
+        user.setUsername(user.getUsername().toLowerCase());
+        user.setEmail(user.getEmail().toLowerCase());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userValidator.validate(user);
         userRepository.save(user);
     }
 
@@ -68,4 +54,21 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
+
+    @Autowired
+    public UserService(BCryptPasswordEncoder passwordEncoder, UserValidator userValidator,
+                       UserRepository userRepository, UserResponseConverter userResponseConverter) {
+        this.passwordEncoder = passwordEncoder;
+        this.userValidator = userValidator;
+        this.userRepository = userRepository;
+        this.userResponseConverter = userResponseConverter;
+    }
+
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserValidator userValidator;
+    private final UserRepository userRepository;
+
+    private final UserResponseConverter userResponseConverter;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 }

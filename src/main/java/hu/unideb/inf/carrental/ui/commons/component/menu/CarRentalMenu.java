@@ -41,7 +41,7 @@ public class CarRentalMenu extends MenuBar {
                 addItem("Logout", VaadinIcons.EXIT, e -> CarRentalEventBus.post(new CarRentalEvent.LogoutRequestEvent()));
                 break;
             case ROLE_CUSTOMER:
-                addItem("Search a car", VaadinIcons.CAR, e -> navigate(CarSearchView.VIEW_NAME));
+                addItem("Search", VaadinIcons.CAR, e -> navigate(CarSearchView.VIEW_NAME));
                 addItem("Reservations", e -> navigate(ReservationView.VIEW_NAME));
                 addItem("Logout", VaadinIcons.EXIT, e -> CarRentalEventBus.post(new CarRentalEvent.LogoutRequestEvent()));
                 break;

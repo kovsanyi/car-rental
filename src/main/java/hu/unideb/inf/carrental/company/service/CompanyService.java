@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,11 +46,12 @@ public class CompanyService {
      * @throws NameAlreadyInUseException         if the given company name is already in use
      * @throws CompanyEmailAlreadyInUseException if the given company email is already in use
      */
-    @Transactional
+    @Transactional(rollbackFor = {UsernameAlreadyInUseException.class, EmailAlreadyInUseException.class})
     public long save(CreateCompanyRequest createCompanyRequest) throws UsernameAlreadyInUseException,
             EmailAlreadyInUseException, NameAlreadyInUseException, CompanyEmailAlreadyInUseException {
         LOGGER.info("Saving company");
         Company company = createCompanyRequestConverter.from(createCompanyRequest);
+        company.setEmail(company.getEmail().toLowerCase());
         companyValidator.validate(company);
         company.getUser().setRole(UserRole.ROLE_COMPANY);
         userService.save(company.getUser());
@@ -65,16 +66,16 @@ public class CompanyService {
      * @throws NameAlreadyInUseException         if the given company name is already in use
      * @throws CompanyEmailAlreadyInUseException if the given company email is already in use
      */
-    @Secured({"ROLE_COMPANY"})
+    @Secured("ROLE_COMPANY")
     public void update(UpdateCompanyRequest updateCompanyRequest)
             throws NameAlreadyInUseException, CompanyEmailAlreadyInUseException {
         LOGGER.info("Updating company");
         Company update = updateCompanyRequestConverter.from(updateCompanyRequest);
-        Company company = companyRepository.findByUser(getUser()).get();
-        company.setName(update.getName());
-        company.setEmail(update.getEmail());
-        company.setPhoneNumber(update.getPhoneNumber());
-        companyValidator.validate(company);
+        User user = getUser();
+        Company company = getCompany();
+        update.setId(company.getId());
+        update.setUser(user);
+        companyValidator.validate(update);
         companyRepository.save(company);
     }
 
@@ -86,7 +87,7 @@ public class CompanyService {
      * @throws CarInRentException if the company can not be deleted due to it has active reservation
      * @see hu.unideb.inf.carrental.site.service.SiteService
      */
-    @Secured({"ROLE_COMPANY"})
+    @Secured("ROLE_COMPANY")
     public void delete() throws CollisionException, CarInRentException {
         LOGGER.info("Deleting company");
         deleteCompany.delete(getCompany());
@@ -98,7 +99,7 @@ public class CompanyService {
      *
      * @return the details of the logged in company (owner)
      */
-    @Secured({"ROLE_COMPANY"})
+    @Secured("ROLE_COMPANY")
     public CompanyResponse get() {
         LOGGER.info("Providing company details of logged in user");
         return companyResponseConverter.from(companyRepository.findByUser(getUser()).get());
@@ -117,6 +118,34 @@ public class CompanyService {
         LOGGER.info("Providing company details by ID {}", id);
         return companyResponseConverter.from(companyRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Constants.INVALID_COMPANY_ID)));
+    }
+
+    /**
+     * Returns the company details by <b>user ID</b>.<br>
+     * <b>User ID does not equal to company ID!</b> The user ID is unique to the whole system including company,
+     * manager and customer IDs, whereas the company ID is unique only among the companies.
+     *
+     * @param userId user ID of the manager
+     * @return the company details by user ID
+     * @throws NotFoundException if the user ID does not identify a company
+     */
+    public CompanyResponse getByUserId(long userId) throws NotFoundException {
+        LOGGER.info("Providing company details by user ID");
+        return companyResponseConverter.from(companyRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(Constants.COMPANY_NOT_FOUND)));
+    }
+
+    /**
+     * Returns the company details by username.
+     *
+     * @param username username of the company owner
+     * @return the company details by username
+     * @throws NotFoundException if the username does not identify a company
+     */
+    public CompanyResponse getByUsername(String username) throws NotFoundException {
+        LOGGER.info("Providing company details by username");
+        return companyResponseConverter.from(companyRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(Constants.COMPANY_NOT_FOUND)));
     }
 
     /**

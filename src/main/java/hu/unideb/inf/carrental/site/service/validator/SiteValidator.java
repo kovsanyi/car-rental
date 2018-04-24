@@ -7,6 +7,7 @@ import hu.unideb.inf.carrental.commons.domain.manager.ManagerRepository;
 import hu.unideb.inf.carrental.commons.domain.site.Site;
 import hu.unideb.inf.carrental.commons.domain.site.SiteRepository;
 import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
+import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import org.slf4j.Logger;
@@ -27,6 +28,11 @@ public class SiteValidator {
     public SiteValidator(SiteRepository siteRepository, ManagerRepository managerRepository) {
         this.siteRepository = siteRepository;
         this.managerRepository = managerRepository;
+    }
+
+    public void validate(long siteId) throws NotFoundException, UnauthorizedAccessException {
+        Site site = siteRepository.findById(siteId).orElseThrow(() -> new NotFoundException(Constants.SITE_NOT_FOUND));
+        validate(site);
     }
 
     @Transactional

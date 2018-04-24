@@ -23,9 +23,6 @@ public class ReservationView extends VerticalLayout implements View {
 
     @Autowired
     public ReservationView(ReservationService reservationService, SiteService siteService, CarService carService) {
-        this.reservationService = reservationService;
-        this.siteService = siteService;
-        this.carService = carService;
 
         setMargin(false);
         setSpacing(true);
@@ -46,16 +43,12 @@ public class ReservationView extends VerticalLayout implements View {
                 addComponent(new ManagerReservationContent(reservationService, siteService));
                 break;
             case ROLE_CUSTOMER:
-                addComponent(new CustomerBar(carService));
+                addComponent(new CustomerBar());
                 addComponent(new CarRentalMenu());
                 addComponent(new CustomerReservationsContent(reservationService));
                 break;
         }
     }
-
-    private final ReservationService reservationService;
-    private final SiteService siteService;
-    private final CarService carService;
 
     public static final String VIEW_NAME = "reservation";
 }

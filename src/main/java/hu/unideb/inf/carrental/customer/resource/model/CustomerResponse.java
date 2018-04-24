@@ -1,10 +1,8 @@
 package hu.unideb.inf.carrental.customer.resource.model;
 
 public class CustomerResponse {
+    private Long id;
     private Long userId;
-    private String userUsername;
-    private String userEmail;
-    private String userRole;
     private String fullName;
     private String phoneNumber;
     private Integer zipCode;
@@ -14,17 +12,22 @@ public class CustomerResponse {
     public CustomerResponse() {
     }
 
-    public CustomerResponse(Long userId, String userUsername, String userEmail, String userRole, String fullName,
-                            String phoneNumber, Integer zipCode, String city, String address) {
+    public CustomerResponse(Long id, Long userId, String fullName, String phoneNumber, Integer zipCode, String city, String address) {
+        this.id = id;
         this.userId = userId;
-        this.userUsername = userUsername;
-        this.userEmail = userEmail;
-        this.userRole = userRole;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.zipCode = zipCode;
         this.city = city;
         this.address = address;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getUserId() {
@@ -33,30 +36,6 @@ public class CustomerResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getUserUsername() {
-        return userUsername;
-    }
-
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
     }
 
     public String getFullName() {
@@ -106,10 +85,8 @@ public class CustomerResponse {
 
         CustomerResponse that = (CustomerResponse) o;
 
+        if (!id.equals(that.id)) return false;
         if (!userId.equals(that.userId)) return false;
-        if (!userUsername.equals(that.userUsername)) return false;
-        if (!userEmail.equals(that.userEmail)) return false;
-        if (!userRole.equals(that.userRole)) return false;
         if (!fullName.equals(that.fullName)) return false;
         if (!phoneNumber.equals(that.phoneNumber)) return false;
         if (!zipCode.equals(that.zipCode)) return false;
@@ -119,10 +96,8 @@ public class CustomerResponse {
 
     @Override
     public int hashCode() {
-        int result = userId.hashCode();
-        result = 31 * result + userUsername.hashCode();
-        result = 31 * result + userEmail.hashCode();
-        result = 31 * result + userRole.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + userId.hashCode();
         result = 31 * result + fullName.hashCode();
         result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
@@ -134,10 +109,8 @@ public class CustomerResponse {
     @Override
     public String toString() {
         return "CustomerResponse{" +
-                "userId=" + userId +
-                ", userUsername='" + userUsername + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userRole='" + userRole + '\'' +
+                "id=" + id +
+                ", userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +

@@ -1,6 +1,5 @@
 package hu.unideb.inf.carrental.manager.service;
 
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.EmailAlreadyInUseException;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UsernameAlreadyInUseException;
@@ -32,7 +31,7 @@ public class ManagerServiceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateManagerRequest createManagerRequest = new CreateManagerRequest("newManager".toLowerCase(), "password", "newmanager@mail.com", "New Manager", "11111111111", 1111, "City", "Address");
-        ManagerResponse managerResponse = new ManagerResponse(3L, 10L, "newManager".toLowerCase(), "newmanager@mail.com", UserRole.ROLE_MANAGER.toString(), "New Manager", "11111111111", 1111, "City", "Address");
+        ManagerResponse managerResponse = new ManagerResponse(3L, 10L, "New Manager", "11111111111", 1111, "City", "Address");
         managerService.save(createManagerRequest);
         assert managerService.getById(3L).equals(managerResponse);
     }
@@ -53,7 +52,7 @@ public class ManagerServiceTest {
     public void updateShouldBeSuccess() throws Exception {
         setAuth("manager");
         UpdateManagerRequest updateManagerRequest = new UpdateManagerRequest("Updated Manager", "11111111112", 1112, "City1", "Address1");
-        ManagerResponse managerResponse = new ManagerResponse(1L, 8L, "manager".toLowerCase(), "manager@mail.com", UserRole.ROLE_MANAGER.toString(), "Updated Manager", "11111111112", 1112, "City1", "Address1");
+        ManagerResponse managerResponse = new ManagerResponse(1L, 8L, "Updated Manager", "11111111112", 1112, "City1", "Address1");
         managerService.update(updateManagerRequest);
         assert managerService.getById(1L).equals(managerResponse);
     }

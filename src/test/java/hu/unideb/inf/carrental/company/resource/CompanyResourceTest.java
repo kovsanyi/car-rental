@@ -3,7 +3,6 @@ package hu.unideb.inf.carrental.company.resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.unideb.inf.carrental.commons.constant.Constants;
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.enumeration.ExceptionType;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.ErrorResponse;
@@ -53,7 +52,7 @@ public class CompanyResourceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("newCompany".toLowerCase(), "password", "newcompany@mail.com", "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
-        CompanyResponse companyResponse = new CompanyResponse(4L, 10L, "newCompany".toLowerCase(), "newcompany@mail.com", UserRole.ROLE_COMPANY.toString(), "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
+        CompanyResponse companyResponse = new CompanyResponse(4L, 10L, "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
                 post(PATH + SAVE)
@@ -131,7 +130,7 @@ public class CompanyResourceTest {
                         .with(withAuth("company"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(updateCompanyRequest)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
@@ -169,7 +168,7 @@ public class CompanyResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("company")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
@@ -179,7 +178,7 @@ public class CompanyResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("companyWithSites")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.COLLISION, Constants.COMPANY_HAS_SITES)));
     }

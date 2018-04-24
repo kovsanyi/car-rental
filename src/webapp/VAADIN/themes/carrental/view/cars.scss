@@ -9,5 +9,12 @@
     .v-panel {
       @include animation(valo-animate-out-face 800ms 10ms backwards, valo-animate-in-fade 600ms 100ms backwards);
     }
+
+    .v-verticallayout#search_form {
+      padding: 10px;
+      border: 1px solid rgb(213, 213, 213);
+      border-radius: 5px;
+      background-color: white;
+    }
   }
 }

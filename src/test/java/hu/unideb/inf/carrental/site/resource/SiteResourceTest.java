@@ -54,7 +54,7 @@ public class SiteResourceTest {
     @Test
     public void saveShouldBeSuccessWhenManagerExists() throws Exception {
         CreateSiteRequest createSiteRequest = new CreateSiteRequest("manager", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(5L, 1L, 1L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(5L, 1L, 1L, "manager", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
 
         assert mvc.perform(
                 post(PATH + SAVE)
@@ -76,7 +76,7 @@ public class SiteResourceTest {
     @Test
     public void saveShouldBeSuccessWhenManagerNull() throws Exception {
         CreateSiteRequest createSiteRequest = new CreateSiteRequest(null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(5L, 1L, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(5L, 1L, null, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
 
         assert mvc.perform(
                 post(PATH + SAVE)
@@ -111,14 +111,14 @@ public class SiteResourceTest {
     @Test
     public void updateByCompanyShouldBeSuccess() throws Exception {
         UpdateSiteRequest updateSiteRequest = new UpdateSiteRequest(1L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(1L, 2L, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(1L, 2L, null, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
 
         assert mvc.perform(
                 put(PATH + UPDATE)
                         .with(withAuth("companyWithSites"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(updateSiteRequest)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -132,14 +132,14 @@ public class SiteResourceTest {
     @Test
     public void updateByManagerShouldBeSuccess() throws Exception {
         UpdateSiteRequest updateSiteRequest = new UpdateSiteRequest(3L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(3L, 3L, 2L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(3L, 3L, 2L, "managerwithsite", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
 
         assert mvc.perform(
                 put(PATH + UPDATE)
                         .with(withAuth("managerWithSite"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(updateSiteRequest)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -194,7 +194,7 @@ public class SiteResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE, 1)
                         .with(withAuth("companyWithSites")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -230,7 +230,7 @@ public class SiteResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE, 3)
                         .with(withAuth("companyWithCars")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.COLLISION, Constants.SITE_HAS_CARS)));
     }
@@ -270,7 +270,7 @@ public class SiteResourceTest {
         assert mvc.perform(
                 put(PATH + SET_MANAGER_BY_ID, 1, 2)
                         .with(withAuth("companyWithSites")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.MANAGER_COLLISION, Constants.MANAGER_ALREADY_SITE_MANAGER)));
     }
@@ -310,7 +310,7 @@ public class SiteResourceTest {
         assert mvc.perform(
                 put(PATH + SET_MANAGER_BY_USER_ID, 1, 9)
                         .with(withAuth("companyWithSites")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.MANAGER_COLLISION, Constants.MANAGER_ALREADY_SITE_MANAGER)));
     }
@@ -350,7 +350,7 @@ public class SiteResourceTest {
         assert mvc.perform(
                 put(PATH + SET_MANAGER_BY_USERNAME, 1, "managerWithSite".toLowerCase())
                         .with(withAuth("companyWithSites")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.MANAGER_COLLISION, Constants.MANAGER_ALREADY_SITE_MANAGER)));
     }

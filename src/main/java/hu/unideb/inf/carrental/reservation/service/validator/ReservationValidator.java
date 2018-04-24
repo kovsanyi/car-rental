@@ -4,10 +4,7 @@ import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.domain.customer.CustomerRepository;
 import hu.unideb.inf.carrental.commons.domain.reservation.Reservation;
 import hu.unideb.inf.carrental.commons.domain.reservation.ReservationRepository;
-import hu.unideb.inf.carrental.commons.exception.CarInRentException;
-import hu.unideb.inf.carrental.commons.exception.InvalidInputException;
-import hu.unideb.inf.carrental.commons.exception.ReservationCollisionException;
-import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
+import hu.unideb.inf.carrental.commons.exception.*;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.site.service.validator.SiteValidator;
 import org.slf4j.Logger;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -64,8 +62,10 @@ public class ReservationValidator {
         }
     }
 
-    public void validateClosing(Reservation reservation) throws UnauthorizedAccessException {
+    public void validateClosing(Reservation reservation) throws UnauthorizedAccessException, NotFoundException {
         logger.info("Validating reservation to be closed");
+        if (Objects.nonNull(reservation.getReturnedDate()))
+            throw new NotFoundException(Constants.RESERVATION_ALREADY_CLOSED);
         siteValidator.validate(reservation.getCar().getSite());
     }
 }

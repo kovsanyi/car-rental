@@ -34,7 +34,7 @@ public class SiteServiceTest {
     public void saveShouldBeSuccessWhenManagerExists() throws Exception {
         setAuth("company");
         CreateSiteRequest createSiteRequest = new CreateSiteRequest("manager", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(5L, 1L, 1L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(5L, 1L, 1L, "manager", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
         siteService.save(createSiteRequest);
 
         assert siteService.getByCompany().size() == 1;
@@ -46,7 +46,7 @@ public class SiteServiceTest {
     public void saveShouldBeSuccessWhenManagerNull() throws Exception {
         setAuth("company");
         CreateSiteRequest createSiteRequest = new CreateSiteRequest(null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(5L, 1L, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(5L, 1L, null, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
         siteService.save(createSiteRequest);
 
         assert siteService.getByCompany().size() == 1;
@@ -65,7 +65,7 @@ public class SiteServiceTest {
     public void updateByCompanyShouldBeSuccess() throws Exception {
         setAuth("companyWithSites");
         UpdateSiteRequest updateSiteRequest = new UpdateSiteRequest(1L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(1L, 2L, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(1L, 2L, null, null, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
         siteService.update(updateSiteRequest);
 
         assert siteService.getById(1L).equals(siteResponse);
@@ -75,7 +75,7 @@ public class SiteServiceTest {
     public void updateByManagerShouldBeSuccess() throws Exception {
         setAuth("managerWithSite");
         UpdateSiteRequest updateSiteRequest = new UpdateSiteRequest(3L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
-        SiteResponse siteResponse = new SiteResponse(3L, 3L, 2L, "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
+        SiteResponse siteResponse = new SiteResponse(3L, 3L, 2L, "managerwithsite", "new_site@mail.com", "99999999999", 9999, "City", "Address", "OpeningHours");
         siteService.update(updateSiteRequest);
 
         assert siteService.getById(3L).equals(siteResponse);

@@ -36,14 +36,14 @@ public class CompanyResource {
     public ResponseEntity<?> update(@Valid @RequestBody UpdateCompanyRequest updateCompanyRequest)
             throws NameAlreadyInUseException, CompanyEmailAlreadyInUseException {
         companyService.update(updateCompanyRequest);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE)
     public ResponseEntity<?> delete() throws CollisionException, CarInRentException {
         companyService.delete();
         SecurityContextHolder.getContext().setAuthentication(null);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @GetMapping(GET_ROOT)
@@ -54,6 +54,16 @@ public class CompanyResource {
     @GetMapping(GET_BY_ID)
     public ResponseEntity<?> getById(@PathVariable("id") long id) throws NotFoundException {
         return new ResponseEntity<>(companyService.getById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(GET_BY_USER_ID)
+    public ResponseEntity<?> getByUserId(@PathVariable("userId") long userId) throws NotFoundException {
+        return new ResponseEntity<>(companyService.getByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping(GET_BY_USERNAME)
+    public ResponseEntity<?> getByUsername(@PathVariable("username") String username) throws NotFoundException {
+        return new ResponseEntity<>(companyService.getByUsername(username), HttpStatus.OK);
     }
 
     @GetMapping(GET_BY_NAME)
@@ -71,6 +81,8 @@ public class CompanyResource {
     public static final String DELETE = "/delete";
     public static final String GET_ROOT = "/";
     public static final String GET_BY_ID = "/id/{id}";
+    public static final String GET_BY_USER_ID = "/userId/{userId}";
+    public static final String GET_BY_USERNAME = "/username/{username}";
     public static final String GET_BY_NAME = "/name/{name}";
     public static final String GET_ALL = "/all";
 }

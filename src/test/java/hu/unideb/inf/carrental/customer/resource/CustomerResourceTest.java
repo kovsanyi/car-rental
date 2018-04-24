@@ -3,7 +3,6 @@ package hu.unideb.inf.carrental.customer.resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.unideb.inf.carrental.commons.constant.Constants;
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.enumeration.ExceptionType;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.ErrorResponse;
@@ -53,7 +52,7 @@ public class CustomerResourceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest("newCustomer".toLowerCase(), "password", "newcustomer@mail.com", "New Customer", "11111111111", 1111, "City", "Address");
-        CustomerResponse customerResponse = new CustomerResponse(10L, "newCustomer".toLowerCase(), "newcustomer@mail.com", UserRole.ROLE_CUSTOMER.toString(), "New Customer", "11111111111", 1111, "City", "Address");
+        CustomerResponse customerResponse = new CustomerResponse(5L, 10L, "New Customer", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
                 post(PATH + SAVE)
@@ -99,14 +98,14 @@ public class CustomerResourceTest {
     @Test
     public void updateShouldBeSuccess() throws Exception {
         UpdateCustomerRequest updateCustomerRequest = new UpdateCustomerRequest("Updated Customer", "11111111112", 1112, "City1", "Address1");
-        CustomerResponse customerResponse = new CustomerResponse(4L, "customer", "customer@mail.com", UserRole.ROLE_CUSTOMER.toString(), "Updated Customer", "11111111112", 1112, "City1", "Address1");
+        CustomerResponse customerResponse = new CustomerResponse(1L, 4L, "Updated Customer", "11111111112", 1112, "City1", "Address1");
 
         assert mvc.perform(
                 put(PATH + UPDATE)
                         .with(withAuth("customer"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(updateCustomerRequest)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -122,14 +121,14 @@ public class CustomerResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("customer")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("customerClosedReservation")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
@@ -139,7 +138,7 @@ public class CustomerResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("customer")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -154,12 +153,12 @@ public class CustomerResourceTest {
         System.err.println(mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("customerActiveReservation")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString());
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("customerActiveReservation")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.CAR_IN_RENT, Constants.CAR_STILL_IN_RENT)));
     }

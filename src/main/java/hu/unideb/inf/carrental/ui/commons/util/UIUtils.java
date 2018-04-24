@@ -33,6 +33,10 @@ public final class UIUtils {
             return String.format("<b>%s</b>", text);
         }
 
+        public static String italic(String text) {
+            return String.format("<i>%s</i>", text);
+        }
+
         public static Label buildKeyLabel(String text) {
             final Label label = new Label(bold(text), ContentMode.HTML);
             label.setId("key");
@@ -41,6 +45,12 @@ public final class UIUtils {
 
         public static Label buildValueLabel(String text) {
             final Label label = new Label(text);
+            label.setId("value");
+            return label;
+        }
+
+        public static Label buildValueLabel(String text, ContentMode contentMode) {
+            final Label label = new Label(text, contentMode);
             label.setId("value");
             return label;
         }

@@ -36,14 +36,14 @@ public class ManagerResource {
     @PutMapping(UPDATE)
     public ResponseEntity<?> update(@Valid @RequestBody UpdateManagerRequest updateManagerRequest) {
         managerService.update(updateManagerRequest);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE)
     public ResponseEntity<?> delete() {
         managerService.delete();
         SecurityContextHolder.getContext().setAuthentication(null);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @GetMapping(GET_ROOT)

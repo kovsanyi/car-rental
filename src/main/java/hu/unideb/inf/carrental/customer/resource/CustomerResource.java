@@ -37,14 +37,14 @@ public class CustomerResource {
     @PutMapping(UPDATE)
     public ResponseEntity<?> update(@Valid @RequestBody UpdateCustomerRequest updateCustomerRequest) {
         customerService.update(updateCustomerRequest);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping(DELETE)
     public ResponseEntity<?> delete() throws CarInRentException {
         customerService.delete();
         SecurityContextHolder.getContext().setAuthentication(null);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @GetMapping(GET_ROOT)

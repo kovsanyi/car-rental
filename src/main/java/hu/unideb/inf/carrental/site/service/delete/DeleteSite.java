@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DeleteSite {
@@ -26,7 +25,7 @@ public class DeleteSite {
         this.carRepository = carRepository;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = CollisionException.class)
     public void delete(Site site) throws CollisionException {
         LOGGER.trace("Deleting site ID {}", site.getId());
         if (!carRepository.findBySite(site).isEmpty()) {

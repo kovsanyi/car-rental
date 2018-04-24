@@ -8,6 +8,7 @@ public final class Constants {
     public final static String PATH_COMPANY = "/api/company";
     public final static String PATH_CAR = "/api/car";
     public final static String PATH_SITE = "/api/site";
+    public final static String PATH_RESERVATION = "/api/reservation";
 
     //User
     public final static String USER_NOT_FOUND = "User not found";
@@ -48,6 +49,7 @@ public final class Constants {
     public final static String RESERVATION_NOT_FOUND = "Reservation not found";
     public final static String NO_ACTIVE_RESERVATION = "No active reservation";
     public final static String CUSTOMER_HAS_RESERVATION = "Customer already has a reservation";
+    public final static String RESERVATION_ALREADY_CLOSED = "Reservation already closed!";
 
     //Commons
     public final static String INVALID_DATE = "Date is invalid";
@@ -95,7 +97,7 @@ public final class Constants {
         int PHONE_MIN_LENGTH = 11;
         int PHONE_MAX_LENGTH = 15;
         int ZIP_CODE_MIN_VALUE = 1000;
-        int ZIP_CODE_MAX_VALUE = 10000;
+        int ZIP_CODE_MAX_VALUE = 9999;
         int CITY_MIN_LENGTH = 3;
         int CITY_MAX_LENGTH = 50;
         int ADDRESS_MIN_LENGTH = 3;

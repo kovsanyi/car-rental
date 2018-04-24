@@ -1,6 +1,5 @@
 package hu.unideb.inf.carrental.company.service;
 
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.*;
 import hu.unideb.inf.carrental.company.resource.model.CompanyResponse;
 import hu.unideb.inf.carrental.company.resource.model.CreateCompanyRequest;
@@ -30,7 +29,7 @@ public class CompanyServiceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateCompanyRequest createCompanyRequest = new CreateCompanyRequest("newCompany".toLowerCase(), "password", "newcompany@mail.com", "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
-        CompanyResponse companyResponse = new CompanyResponse(4L, 10L, "newCompany".toLowerCase(), "newcompany@mail.com", UserRole.ROLE_COMPANY.toString(), "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
+        CompanyResponse companyResponse = new CompanyResponse(4L, 10L, "New Company", "newcompany@mail.com", "New Company", "11111111111", 1111, "City", "Address");
         companyService.save(createCompanyRequest);
         assert companyService.getById(4L).equals(companyResponse);
     }

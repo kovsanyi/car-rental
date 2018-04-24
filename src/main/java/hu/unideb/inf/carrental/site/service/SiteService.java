@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -190,6 +190,7 @@ public class SiteService {
      * @see hu.unideb.inf.carrental.company.service.CompanyService
      */
     @Secured("ROLE_COMPANY")
+    @Transactional
     public List<SiteResponse> getByCompany() {
         LOGGER.info("Providing sites to company owner");
         return siteRepository.findByCompany(companyRepository.findByUser(getUser()).get())
@@ -205,6 +206,7 @@ public class SiteService {
      * @see hu.unideb.inf.carrental.manager.service.ManagerService
      */
     @Secured("ROLE_MANAGER")
+    @Transactional
     public SiteResponse getByManager() throws NotFoundException {
         LOGGER.info("Providing site to its manager");
         return siteResponseConverter.from(siteRepository.findByManager(managerRepository.findByUser(getUser()).get())
@@ -218,6 +220,7 @@ public class SiteService {
      * @return the site details by ID
      * @throws NotFoundException if the site ID is invalid
      */
+    @Transactional
     public SiteResponse getById(long id) throws NotFoundException {
         LOGGER.info("Providing site by ID {}", id);
         return siteResponseConverter.from(siteRepository.findById(id)
@@ -232,6 +235,7 @@ public class SiteService {
      * @throws NotFoundException if the site ID is invalid
      * @see hu.unideb.inf.carrental.company.service.CompanyService
      */
+    @Transactional
     public List<SiteResponse> getByCompanyName(String companyName) throws NotFoundException {
         LOGGER.info("Providing sites of company named {}", companyName);
         if (!companyRepository.existsByName(companyName)) {

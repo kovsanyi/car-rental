@@ -21,7 +21,6 @@ public class UserValidator {
         this.userRepository = userRepository;
     }
 
-    //TODO if role not set
     public void validate(User user) throws UsernameAlreadyInUseException, EmailAlreadyInUseException {
         logger.info("Validating user");
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -34,6 +33,7 @@ public class UserValidator {
         }
         if (user.getRole() == null) {
             logger.error(Constants.ERROR_ROLE_NOT_SET);
+            throw new RuntimeException(Constants.ERROR_ROLE_NOT_SET);
         }
     }
 }

@@ -37,10 +37,10 @@ public class CarSearchView extends VerticalLayout implements View {
         removeAllComponents();
 
         if (SecurityUtils.getLoggedInUser().getRole().equals(UserRole.ROLE_CUSTOMER)) {
-            addComponent(new CustomerBar(carService));
+            addComponent(new CustomerBar());
             addComponent(new CarRentalMenu());
 
-            CarSearchContent carSearchContent = new CarSearchContent(event.getParameterMap("/"), carService, carImageService);
+            CarSearchContent carSearchContent = new CarSearchContent(carService, carImageService);
             addComponent(carSearchContent);
         }
     }

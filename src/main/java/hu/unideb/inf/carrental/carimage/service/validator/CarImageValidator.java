@@ -23,9 +23,12 @@ public class CarImageValidator {
 
     public void validate(CarImage carImage) throws IOException, UnauthorizedAccessException {
         LOGGER.info("Validating car image");
-        siteValidator.validate(carImage.getCar().getSite());
         if (carImage.getImageData().length > 2000000) {
-            throw new IOException("Car image size is to big");
+            throw new IOException("Car image size is to big!");
         }
+        if (carImage.getImageData().length == 0) {
+            throw new IOException("Car image size can not be empty!");
+        }
+        siteValidator.validate(carImage.getCar().getSite());
     }
 }

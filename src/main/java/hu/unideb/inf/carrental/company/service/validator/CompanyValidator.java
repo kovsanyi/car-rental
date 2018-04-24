@@ -22,9 +22,8 @@ public class CompanyValidator {
     }
 
     public void validate(Company company) throws NameAlreadyInUseException, CompanyEmailAlreadyInUseException {
-        logger.info("Validating company");
         if (company.getId() == null) {
-            logger.trace("Validating new company");
+            logger.info("Validating new company");
             if (companyRepository.existsByName(company.getName())) {
                 throw new NameAlreadyInUseException(Constants.COMPANY_NAME_ALREADY_EXISTS);
             }
@@ -32,7 +31,7 @@ public class CompanyValidator {
                 throw new CompanyEmailAlreadyInUseException(Constants.COMPANY_EMAIL_ALREADY_EXISTS);
             }
         } else {
-            logger.trace("Validating existing company");
+            logger.info("Validating existing company");
             Company original = companyRepository.findOne(company.getId());
             Company foundedByName = companyRepository.findByName(company.getName()).orElse(original);
             Company foundedByEmail = companyRepository.findByEmail(company.getEmail()).orElse(original);

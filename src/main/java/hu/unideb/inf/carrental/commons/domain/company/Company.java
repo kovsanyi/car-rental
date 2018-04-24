@@ -50,7 +50,7 @@ public class Company {
     }
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -145,7 +145,7 @@ public class Company {
 
         Company company = (Company) o;
 
-        if (!user.equals(company.user)) return false;
+        if (!user.getId().equals(company.user.getId())) return false;
         if (!name.equals(company.name)) return false;
         if (!email.equals(company.email)) return false;
         if (!fullName.equals(company.fullName)) return false;
@@ -157,7 +157,7 @@ public class Company {
 
     @Override
     public int hashCode() {
-        int result = user.hashCode();
+        int result = user.getId().hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + email.hashCode();
         result = 31 * result + fullName.hashCode();
@@ -172,7 +172,7 @@ public class Company {
     public String toString() {
         return "Company{" +
                 "id=" + id +
-                ", user=" + user +
+                ", userId=" + user.getId() +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", fullName='" + fullName + '\'' +

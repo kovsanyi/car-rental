@@ -51,7 +51,7 @@ public class Site {
     }
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public Company getCompany() {
         return company;
     }
@@ -142,7 +142,9 @@ public class Site {
 
         Site site = (Site) o;
 
-        if (!company.equals(site.company)) return false;
+        if (!id.equals(site.id)) return false;
+        if (!company.getId().equals(site.company.getId())) return false;
+        if (!manager.equals(site.manager)) return false;
         if (!email.equals(site.email)) return false;
         if (!phoneNumber.equals(site.phoneNumber)) return false;
         if (!zipCode.equals(site.zipCode)) return false;
@@ -153,7 +155,9 @@ public class Site {
 
     @Override
     public int hashCode() {
-        int result = company.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + company.getId().hashCode();
+        result = 31 * result + manager.hashCode();
         result = 31 * result + email.hashCode();
         result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
@@ -167,8 +171,8 @@ public class Site {
     public String toString() {
         return "Site{" +
                 "id=" + id +
-                ", companyID=" + company.getId() +
-                ", managerID=" + manager.getAddress() +
+                ", companyId=" + company.getId() +
+                ", manager=" + manager +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +

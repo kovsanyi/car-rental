@@ -5,10 +5,7 @@ import hu.unideb.inf.carrental.commons.domain.user.User;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -34,7 +31,7 @@ public class Customer {
     }
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -105,7 +102,7 @@ public class Customer {
 
         Customer customer = (Customer) o;
 
-        if (!user.equals(customer.user)) return false;
+        if (!user.getId().equals(customer.user.getId())) return false;
         if (!fullName.equals(customer.fullName)) return false;
         if (!phoneNumber.equals(customer.phoneNumber)) return false;
         if (!zipCode.equals(customer.zipCode)) return false;
@@ -115,7 +112,7 @@ public class Customer {
 
     @Override
     public int hashCode() {
-        int result = user.hashCode();
+        int result = user.getId().hashCode();
         result = 31 * result + fullName.hashCode();
         result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
@@ -128,7 +125,7 @@ public class Customer {
     public String toString() {
         return "Customer{" +
                 "id=" + id +
-                ", user=" + user +
+                ", userId=" + user.getId() +
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +

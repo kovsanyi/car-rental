@@ -3,9 +3,6 @@ package hu.unideb.inf.carrental.company.resource.model;
 public class CompanyResponse {
     private Long id;
     private Long userId;
-    private String userUsername;
-    private String userEmail;
-    private String userRole;
     private String name;
     private String email;
     private String fullName;
@@ -17,13 +14,10 @@ public class CompanyResponse {
     public CompanyResponse() {
     }
 
-    public CompanyResponse(Long id, Long userId, String userUsername, String userEmail, String userRole, String name,
-                           String email, String fullName, String phoneNumber, Integer zipCode, String city, String address) {
+    public CompanyResponse(Long id, Long userId, String name, String email, String fullName, String phoneNumber,
+                           Integer zipCode, String city, String address) {
         this.id = id;
         this.userId = userId;
-        this.userUsername = userUsername;
-        this.userEmail = userEmail;
-        this.userRole = userRole;
         this.name = name;
         this.email = email;
         this.fullName = fullName;
@@ -47,30 +41,6 @@ public class CompanyResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getUserUsername() {
-        return userUsername;
-    }
-
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
     }
 
     public String getName() {
@@ -138,13 +108,10 @@ public class CompanyResponse {
 
         if (!id.equals(that.id)) return false;
         if (!userId.equals(that.userId)) return false;
-        if (!userUsername.equals(that.userUsername)) return false;
-        if (!userEmail.equals(that.userEmail)) return false;
-        if (!userRole.equals(that.userRole)) return false;
         if (!name.equals(that.name)) return false;
         if (!email.equals(that.email)) return false;
-        if (!phoneNumber.equals(that.phoneNumber)) return false;
         if (!fullName.equals(that.fullName)) return false;
+        if (!phoneNumber.equals(that.phoneNumber)) return false;
         if (!zipCode.equals(that.zipCode)) return false;
         if (!city.equals(that.city)) return false;
         return address.equals(that.address);
@@ -154,13 +121,10 @@ public class CompanyResponse {
     public int hashCode() {
         int result = id.hashCode();
         result = 31 * result + userId.hashCode();
-        result = 31 * result + userUsername.hashCode();
-        result = 31 * result + userEmail.hashCode();
-        result = 31 * result + userRole.hashCode();
         result = 31 * result + name.hashCode();
         result = 31 * result + email.hashCode();
-        result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + fullName.hashCode();
+        result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
         result = 31 * result + city.hashCode();
         result = 31 * result + address.hashCode();
@@ -172,13 +136,10 @@ public class CompanyResponse {
         return "CompanyResponse{" +
                 "id=" + id +
                 ", userId=" + userId +
-                ", userUsername='" + userUsername + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userRole='" + userRole + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +
                 ", city='" + city + '\'' +
                 ", address='" + address + '\'' +

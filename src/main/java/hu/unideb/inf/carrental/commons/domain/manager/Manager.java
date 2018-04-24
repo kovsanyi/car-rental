@@ -5,10 +5,7 @@ import hu.unideb.inf.carrental.commons.domain.user.User;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -34,7 +31,7 @@ public class Manager {
     }
 
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     public User getUser() {
         return user;
     }
@@ -105,7 +102,7 @@ public class Manager {
 
         Manager manager = (Manager) o;
 
-        if (!user.equals(manager.user)) return false;
+        if (!user.getId().equals(manager.user.getId())) return false;
         if (!fullName.equals(manager.fullName)) return false;
         if (!phoneNumber.equals(manager.phoneNumber)) return false;
         if (!zipCode.equals(manager.zipCode)) return false;
@@ -115,7 +112,7 @@ public class Manager {
 
     @Override
     public int hashCode() {
-        int result = user.hashCode();
+        int result = user.getId().hashCode();
         result = 31 * result + fullName.hashCode();
         result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
@@ -128,7 +125,7 @@ public class Manager {
     public String toString() {
         return "Manager{" +
                 "id=" + id +
-                ", user=" + user +
+                ", userId=" + user.getId() +
                 ", fullName='" + fullName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +

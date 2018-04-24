@@ -57,7 +57,7 @@ public class Car {
     }
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public Site getSite() {
         return site;
     }

@@ -1,6 +1,5 @@
 package hu.unideb.inf.carrental.customer.service;
 
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.CarInRentException;
 import hu.unideb.inf.carrental.commons.exception.EmailAlreadyInUseException;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
@@ -33,7 +32,7 @@ public class CustomerServiceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateCustomerRequest createCustomerRequest = new CreateCustomerRequest("newCustomer".toLowerCase(), "password", "newcustomer@mail.com", "New Customer", "11111111111", 1111, "City", "Address");
-        CustomerResponse customerResponse = new CustomerResponse(10L, "newCustomer".toLowerCase(), "newcustomer@mail.com", UserRole.ROLE_CUSTOMER.toString(), "New Customer", "11111111111", 1111, "City", "Address");
+        CustomerResponse customerResponse = new CustomerResponse(5L, 10L, "New Customer", "11111111111", 1111, "City", "Address");
         customerService.save(createCustomerRequest);
         assert customerService.getById(5L).equals(customerResponse);
     }
@@ -54,7 +53,7 @@ public class CustomerServiceTest {
     public void updateShouldBeSuccess() throws Exception {
         setAuth("customer");
         UpdateCustomerRequest updateCustomerRequest = new UpdateCustomerRequest("Updated Customer", "11111111112", 1112, "City1", "Address1");
-        CustomerResponse customerResponse = new CustomerResponse(4L, "customer", "customer@mail.com", UserRole.ROLE_CUSTOMER.toString(), "Updated Customer", "11111111112", 1112, "City1", "Address1");
+        CustomerResponse customerResponse = new CustomerResponse(1L, 4L, "Updated Customer", "11111111112", 1112, "City1", "Address1");
         customerService.update(updateCustomerRequest);
         assert customerService.getById(1L).equals(customerResponse);
     }

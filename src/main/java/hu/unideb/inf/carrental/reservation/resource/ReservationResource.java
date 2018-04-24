@@ -1,5 +1,6 @@
 package hu.unideb.inf.carrental.reservation.resource;
 
+import hu.unideb.inf.carrental.commons.constant.Constants;
 import hu.unideb.inf.carrental.commons.exception.*;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.SuccessResponse;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reservation")
+@RequestMapping(Constants.PATH_RESERVATION)
 public class ReservationResource {
     private final ReservationService reservationService;
 
@@ -31,7 +32,7 @@ public class ReservationResource {
     public ResponseEntity close(@PathVariable("reservationId") long reservationId)
             throws NotFoundException, UnauthorizedAccessException {
         reservationService.close(reservationId);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @GetMapping(ACTIVE_BY_CUSTOMER)

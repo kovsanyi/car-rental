@@ -27,9 +27,8 @@ import java.util.Objects;
 @SpringView(name = SiteView.VIEW_NAME)
 public class SiteView extends VerticalLayout implements View {
 
-    public SiteView(SiteService siteService, CarService carService, ManagerService managerService) {
+    public SiteView(SiteService siteService,  ManagerService managerService) {
         this.siteService = siteService;
-        this.carService = carService;
         this.managerService = managerService;
 
         setMargin(false);
@@ -73,7 +72,7 @@ public class SiteView extends VerticalLayout implements View {
                     Long siteID = Long.parseLong(event.getParameterMap().get("id"));
                     SiteResponse siteResponse = siteService.getById(siteID);
 
-                    addComponent(new CustomerBar(carService));
+                    addComponent(new CustomerBar());
                     addComponent(new CarRentalMenu());
                     addComponent(new SiteContent(siteResponse));
                 } catch (NumberFormatException | NotFoundException e) {
@@ -84,7 +83,6 @@ public class SiteView extends VerticalLayout implements View {
     }
 
     private final SiteService siteService;
-    private final CarService carService;
     private final ManagerService managerService;
 
     public static final String VIEW_NAME = "site";

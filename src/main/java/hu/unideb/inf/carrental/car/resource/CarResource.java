@@ -37,7 +37,7 @@ public class CarResource {
     public ResponseEntity<?> delete(@PathVariable("id") long id)
             throws NotFoundException, UnauthorizedAccessException, CarInRentException {
         carService.delete(id);
-        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @GetMapping(GET_BY_ID)

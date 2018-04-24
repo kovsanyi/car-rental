@@ -3,7 +3,6 @@ package hu.unideb.inf.carrental.manager.resource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.unideb.inf.carrental.commons.constant.Constants;
-import hu.unideb.inf.carrental.commons.domain.user.enumeration.UserRole;
 import hu.unideb.inf.carrental.commons.exception.enumeration.ExceptionType;
 import hu.unideb.inf.carrental.commons.model.CreatedResponse;
 import hu.unideb.inf.carrental.commons.model.ErrorResponse;
@@ -51,7 +50,7 @@ public class ManagerResourceTest {
     @Test
     public void saveShouldBeSuccess() throws Exception {
         CreateManagerRequest createManagerRequest = new CreateManagerRequest("newManager".toLowerCase(), "password", "newmanager@mail.com", "New Manager", "11111111111", 1111, "City", "Address");
-        ManagerResponse managerResponse = new ManagerResponse(3L, 10L, "newManager".toLowerCase(), "newmanager@mail.com", UserRole.ROLE_MANAGER.toString(), "New Manager", "11111111111", 1111, "City", "Address");
+        ManagerResponse managerResponse = new ManagerResponse(3L, 10L, "New Manager", "11111111111", 1111, "City", "Address");
 
         assert mvc.perform(
                 post(PATH + SAVE)
@@ -97,14 +96,14 @@ public class ManagerResourceTest {
     @Test
     public void updateShouldBeSuccess() throws Exception {
         UpdateManagerRequest updateManagerRequest = new UpdateManagerRequest("Updated Manager", "11111111112", 1112, "City1", "Address1");
-        ManagerResponse managerResponse = new ManagerResponse(1L, 8L, "manager".toLowerCase(), "manager@mail.com", UserRole.ROLE_MANAGER.toString(), "Updated Manager", "11111111112", 1112, "City1", "Address1");
+        ManagerResponse managerResponse = new ManagerResponse(1L, 8L, "Updated Manager", "11111111112", 1112, "City1", "Address1");
 
         assert mvc.perform(
                 put(PATH + UPDATE)
                         .with(withAuth("manager"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(updateManagerRequest)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
@@ -120,14 +119,14 @@ public class ManagerResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("manager")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("managerWithSite")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
@@ -137,7 +136,7 @@ public class ManagerResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE)
                         .with(withAuth("manager")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
 

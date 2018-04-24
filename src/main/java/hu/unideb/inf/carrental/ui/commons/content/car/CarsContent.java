@@ -1,6 +1,5 @@
 package hu.unideb.inf.carrental.ui.commons.content.car;
 
-import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.GridLayout;
 import hu.unideb.inf.carrental.ui.commons.content.root.CarRentalContent;
@@ -12,7 +11,12 @@ public abstract class CarsContent extends CarRentalContent {
     }
 
     @Override
-    protected AbstractLayout buildBody() {
+    protected GridLayout getBody() {
+        return (GridLayout) super.getBody();
+    }
+
+    @Override
+    protected GridLayout buildBody() {
         final GridLayout body = new GridLayout();
         body.setMargin(false);
         body.setSpacing(true);

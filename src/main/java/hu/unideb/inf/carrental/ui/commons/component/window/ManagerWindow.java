@@ -95,9 +95,8 @@ public class ManagerWindow extends Window {
 
     private void loadSiteManager() {
         try {
-            Long managerID = siteService.getById(siteID).getManagerId();
-            if (Objects.nonNull(managerID)) {
-                String username = managerService.getById(managerID).getUserUsername();
+            String username = siteService.getById(siteID).getManagerUserUsername();
+            if (Objects.nonNull(username)) {
                 managerUsername.setValue(username);
                 managerUsername.setEnabled(false);
                 setManager.setVisible(false);

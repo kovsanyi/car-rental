@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DeleteCar {
@@ -27,7 +26,7 @@ public class DeleteCar {
         this.carImageRepository = carImageRepository;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = CarInRentException.class)
     public void delete(Car car) throws CarInRentException {
         LOGGER.trace("Deleting car");
         deleteReservation.deleteCar(car);

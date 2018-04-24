@@ -5,7 +5,7 @@
 
     <groupId>hu.unideb.inf</groupId>
     <artifactId>car-rental</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0-BETA</version>
     <packaging>jar</packaging>
 
     <name>car-rental</name>

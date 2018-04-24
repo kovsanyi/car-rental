@@ -125,8 +125,8 @@ public class CarServiceTest {
     public void getAvailableBySiteIdShouldBeSuccess() throws Exception {
         assert carService.getAvailableBySiteId(1L).size() == 0;
         assert carService.getAvailableBySiteId(2L).size() == 0;
-        assert carService.getAvailableBySiteId(3L).size() == 1;
-        assert carService.getAvailableBySiteId(4L).size() == 1;
+        assert carService.getAvailableBySiteId(3L).size() == 2;
+        assert carService.getAvailableBySiteId(4L).size() == 2;
     }
 
     @Test(expected = NotFoundException.class)

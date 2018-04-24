@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -176,8 +177,22 @@ public class CarService {
         Integer paramMinPrice = minPrice == null ? 0 : minPrice;
         Integer paramMaxPrice = maxPrice == null ? Constants.CAR_MAX_PRICE : maxPrice;
         return carRepository
-                .findByParams(paramCategory, paramBrand, paramFuelType, paramSeatNumber, paramMinPrice, paramMaxPrice)
-                .stream().map(carResponseConverter::from).collect(Collectors.toList());
+                .getByParams(paramCategory, paramBrand, paramFuelType, paramSeatNumber, paramMinPrice, paramMaxPrice).stream()
+                .map(carResponseConverter::from).collect(Collectors.toList());
+    }
+
+    /**
+     * Searches for the cars that can be rented for the specified period.
+     *
+     * @param firstDate fist date of the reservation
+     * @param lastDate  last date of the reservation
+     * @param city      name of the city
+     * @return the cars that match the specified parameters
+     * @since 1.1
+     */
+    public List<CarResponse> getAvailableCarsForRent(LocalDate firstDate, LocalDate lastDate, String city) {
+        return carRepository.getAvailableCarsForRent(firstDate, lastDate, city.toLowerCase()).stream()
+                .map(carResponseConverter::from).collect(Collectors.toList());
     }
 
     /**

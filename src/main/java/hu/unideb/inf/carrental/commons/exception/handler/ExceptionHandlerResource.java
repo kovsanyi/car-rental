@@ -55,42 +55,42 @@ public class ExceptionHandlerResource {
     }
 
     @ExceptionHandler(CarInRentException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleCarAlreadyInRent(CarInRentException e) {
         return new ErrorResponse(ExceptionType.CAR_IN_RENT, e.getMessage());
     }
 
     @ExceptionHandler(ManagerCollisionException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleManagerCollision(ManagerCollisionException e) {
         return new ErrorResponse(ExceptionType.MANAGER_COLLISION, e.getMessage());
     }
 
     @ExceptionHandler(ReservationCollisionException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleReservationCollision(ReservationCollisionException e) {
         return new ErrorResponse(ExceptionType.RESERVATION_COLLISION, e.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
         return new ErrorResponse(ExceptionType.ILLEGAL_ARGUMENT, e.getMessage());
     }
 
     @ExceptionHandler(CollisionException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleCollision(CollisionException e) {
         return new ErrorResponse(ExceptionType.COLLISION, e.getMessage());
     }
 
     @ExceptionHandler(InvalidInputException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_MODIFIED)
     @ResponseBody
     public ErrorResponse handleInvalidInput(InvalidInputException e) {
         return new ErrorResponse(ExceptionType.ILLEGAL_ARGUMENT, e.getMessage());

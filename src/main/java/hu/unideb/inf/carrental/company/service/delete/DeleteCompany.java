@@ -13,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DeleteCompany {
@@ -34,7 +33,7 @@ public class DeleteCompany {
         this.deleteReservation = deleteReservation;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {CollisionException.class, CarInRentException.class})
     public void delete(Company company) throws CollisionException, CarInRentException {
         LOGGER.trace("Deleting company ID {}", company.getId());
         if (!siteRepository.findByCompany(company).isEmpty()) {

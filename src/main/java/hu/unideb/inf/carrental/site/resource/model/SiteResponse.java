@@ -4,6 +4,7 @@ public class SiteResponse {
     private Long id;
     private Long companyId;
     private Long managerId;
+    private String managerUserUsername;
     private String email;
     private String phoneNumber;
     private Integer zipCode;
@@ -14,11 +15,12 @@ public class SiteResponse {
     public SiteResponse() {
     }
 
-    public SiteResponse(Long id, Long companyId, Long managerId, String email, String phoneNumber,
-                        Integer zipCode, String city, String address, String openingHours) {
+    public SiteResponse(Long id, Long companyId, Long managerId, String managerUserUsername, String email,
+                        String phoneNumber, Integer zipCode, String city, String address, String openingHours) {
         this.id = id;
         this.companyId = companyId;
         this.managerId = managerId;
+        this.managerUserUsername = managerUserUsername;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.zipCode = zipCode;
@@ -49,6 +51,14 @@ public class SiteResponse {
 
     public void setManagerId(Long managerId) {
         this.managerId = managerId;
+    }
+
+    public String getManagerUserUsername() {
+        return managerUserUsername;
+    }
+
+    public void setManagerUserUsername(String managerUserUsername) {
+        this.managerUserUsername = managerUserUsername;
     }
 
     public String getEmail() {
@@ -106,9 +116,11 @@ public class SiteResponse {
 
         SiteResponse that = (SiteResponse) o;
 
-        if (!id.equals(that.id)) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (!companyId.equals(that.companyId)) return false;
         if (managerId != null ? !managerId.equals(that.managerId) : that.managerId != null) return false;
+        if (managerUserUsername != null ? !managerUserUsername.equals(that.managerUserUsername) : that.managerUserUsername != null)
+            return false;
         if (!email.equals(that.email)) return false;
         if (!phoneNumber.equals(that.phoneNumber)) return false;
         if (!zipCode.equals(that.zipCode)) return false;
@@ -119,9 +131,10 @@ public class SiteResponse {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + companyId.hashCode();
         result = 31 * result + (managerId != null ? managerId.hashCode() : 0);
+        result = 31 * result + (managerUserUsername != null ? managerUserUsername.hashCode() : 0);
         result = 31 * result + email.hashCode();
         result = 31 * result + phoneNumber.hashCode();
         result = 31 * result + zipCode.hashCode();
@@ -137,6 +150,7 @@ public class SiteResponse {
                 "id=" + id +
                 ", companyId=" + companyId +
                 ", managerId=" + managerId +
+                ", managerUserUsername='" + managerUserUsername + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", zipCode=" + zipCode +

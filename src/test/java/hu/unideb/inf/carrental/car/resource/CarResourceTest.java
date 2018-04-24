@@ -91,7 +91,7 @@ public class CarResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE, 1L)
                         .with(withAuth("companyWithCars")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
     }
@@ -101,7 +101,7 @@ public class CarResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE, 1L)
                         .with(withAuth("companyWithCars")))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new SuccessResponse()));
         assert mvc.perform(
@@ -127,7 +127,7 @@ public class CarResourceTest {
         assert mvc.perform(
                 delete(PATH + DELETE, 4L)
                         .with(withAuth("companyWithCars")))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotModified())
                 .andReturn().getResponse().getContentAsString()
                 .equals(toJson(new ErrorResponse(ExceptionType.CAR_IN_RENT, Constants.CAR_STILL_IN_RENT)));
     }
@@ -283,13 +283,13 @@ public class CarResourceTest {
                         get(PATH + GET_AVAILABLE_BY_SITE_ID, 3L))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString()
-        ).size() == 1;
+        ).size() == 2;
         assert fromJsonList(
                 mvc.perform(
                         get(PATH + GET_AVAILABLE_BY_SITE_ID, 4L))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString()
-        ).size() == 1;
+        ).size() == 2;
     }
 
     @Test

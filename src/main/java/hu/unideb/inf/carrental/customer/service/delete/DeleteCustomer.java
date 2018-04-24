@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DeleteCustomer {
@@ -28,7 +27,7 @@ public class DeleteCustomer {
         this.deleteUser = deleteUser;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = CarInRentException.class)
     public void delete(Customer customer) throws CarInRentException {
         LOGGER.trace("Deleting customer ID {}", customer.getId());
         deleteReservation.deleteCustomer(customer);
