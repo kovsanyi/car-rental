@@ -20,7 +20,7 @@ import java.util.Map;
 public class CarSearchContent extends CarsContent {
 
     public CarSearchContent(CarService carService, CarImageService carImageService) {
-        super("Search for a car");
+        super("Car search");
 
         this.carService = carService;
         this.carImageService = carImageService;

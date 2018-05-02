@@ -41,14 +41,16 @@ public class SignUpView extends VerticalLayout implements View {
         setSizeFull();
         setMargin(false);
         setSpacing(false);
+        setStyleName("signup-view");
 
         final VerticalLayout wrapper = new VerticalLayout();
         wrapper.setMargin(false);
-        wrapper.setWidth(hu.unideb.inf.carrental.ui.commons.constant.Constants.Size.WIDTH, Unit.PIXELS);
-        wrapper.setHeightUndefined();
+        wrapper.setSizeUndefined();
         wrapper.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 
-        wrapper.addComponent(buildContent());
+        final Panel signUpPanel = new Panel("Sign up");
+        signUpPanel.setContent(buildContent());
+        wrapper.addComponent(signUpPanel);
 
         addComponent(wrapper);
         setComponentAlignment(wrapper, Alignment.MIDDLE_CENTER);
@@ -56,6 +58,7 @@ public class SignUpView extends VerticalLayout implements View {
 
     private AbstractLayout buildContent() {
         final FormLayout signUpLayout = new FormLayout();
+        signUpLayout.setMargin(true);
         signUpLayout.setWidth(400.f, Unit.PIXELS);
         signUpLayout.setHeightUndefined();
 

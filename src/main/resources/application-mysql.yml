@@ -8,4 +8,3 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: validate
-    show-sql: true

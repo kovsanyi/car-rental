@@ -113,7 +113,7 @@ public class SiteWindow extends Window {
         email = new TextField("Site email");
         email.setWidth(100.f, Unit.PERCENTAGE);
         email.setMaxLength(Constants.Site.EMAIL_MAX_LENGTH);
-        email.setPlaceholder("site@sitemail.com");
+        email.setPlaceholder("site@mail.com");
         email.addBlurListener(e -> validateEmailTextField(email));
         return email;
     }
@@ -131,7 +131,7 @@ public class SiteWindow extends Window {
         openingHours = new TextField("Opening hours");
         openingHours.setWidth(100.f, Unit.PERCENTAGE);
         openingHours.setMaxLength(Constants.Site.OPENING_HOURS_MAX_LENGTH);
-        openingHours.setPlaceholder("Mon.-Fri. 8:00am-2.00pm, Sat.-Sunday closed");
+        openingHours.setPlaceholder("Mo-Fr: 8:00am-2:00pm, Sa-Su: closed");
         openingHours.addBlurListener(e -> validateTextField(openingHours, Constants.Site.OPENING_HOURS_MIN_LENGTH));
         return openingHours;
     }

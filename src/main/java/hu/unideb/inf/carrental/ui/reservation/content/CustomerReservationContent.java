@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.reservations.content;
+package hu.unideb.inf.carrental.ui.reservation.content;
 
 import com.vaadin.ui.Accordion;
 import hu.unideb.inf.carrental.commons.exception.NotFoundException;
@@ -9,9 +9,9 @@ import java.util.Collections;
 
 import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
 
-public class CustomerReservationsContent extends ReservationContent {
+public class CustomerReservationContent extends ReservationContent {
 
-    public CustomerReservationsContent(ReservationService reservationService) {
+    public CustomerReservationContent(ReservationService reservationService) {
         this.reservationService = reservationService;
 
         setupBody();

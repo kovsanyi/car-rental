@@ -1,0 +1,20 @@
+@mixin car-rental-signup-view {
+
+  .signup-view {
+    background: rgb(68, 67, 63) url("../img/login-background.jpeg") no-repeat;
+    background-size: 100%;
+
+    .v-panel {
+      background-color: rgba(255, 255, 255, 0.80);
+      @include animation(valo-animate-in-slide-left 800ms 10ms, valo-animate-in-fade 600ms 100ms backwards);
+
+      .v-panel-captionwrap {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      .v-panel-caption span {
+        font-weight: bold;
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-package hu.unideb.inf.carrental.ui.reservations.content;
+package hu.unideb.inf.carrental.ui.reservation.content;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
@@ -7,17 +7,14 @@ import hu.unideb.inf.carrental.commons.exception.NotFoundException;
 import hu.unideb.inf.carrental.commons.exception.UnauthorizedAccessException;
 import hu.unideb.inf.carrental.reservation.resource.model.ReservationResponse;
 import hu.unideb.inf.carrental.reservation.service.ReservationService;
-import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.commons.content.reservation.ReservationContent;
 import hu.unideb.inf.carrental.ui.commons.util.UIUtils;
 
 import static hu.unideb.inf.carrental.ui.commons.util.UIUtils.HTML.bold;
 
-public class ManagerReservationContent extends ReservationContent {
-
-    public ManagerReservationContent(ReservationService reservationService, SiteService siteService) {
+public class CompanyReservationContent extends ReservationContent {
+    public CompanyReservationContent(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.siteService = siteService;
 
         setupHeader();
         setupBody();
@@ -34,36 +31,26 @@ public class ManagerReservationContent extends ReservationContent {
         accordion.setSizeFull();
         accordion.setTabCaptionsAsHtml(true);
 
-        try {
-            Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getActiveBySiteId(
-                    siteService.getByManager().getId()));
-            activeReservations.addSelectionListener(e -> {
-                if (!activeReservations.getSelectedItems().isEmpty()) {
-                    markAsClosed.setEnabled(true);
-                    activeReservations.getSelectedItems().stream()
-                            .findFirst()
-                            .ifPresent(reservationResponse -> selectedItem = reservationResponse);
-                } else {
-                    markAsClosed.setEnabled(false);
-                }
-            });
+        Grid<ReservationResponse> activeReservations = buildGrid(reservationService.getActiveByCompany());
+        activeReservations.addSelectionListener(e -> {
+            if (!activeReservations.getSelectedItems().isEmpty()) {
+                markAsClosed.setEnabled(true);
+                activeReservations.getSelectedItems().stream()
+                        .findFirst()
+                        .ifPresent(reservationResponse -> selectedItem = reservationResponse);
+            } else {
+                markAsClosed.setEnabled(false);
+            }
+        });
 
-            accordion.addTab(activeReservations,
-                    String.format("%s - %s", "Reservations", bold("Active")));
-            accordion.addTab(buildGrid(reservationService.getClosedBySiteId(siteService.getByManager().getId())),
-                    String.format("%s - %s", "Reservations", bold("Closed")));
-            accordion.addTab(buildGrid(reservationService.getAllBySiteId(siteService.getByManager().getId())),
-                    String.format("%s - %s", "Reservations", bold("All")));
+        accordion.addTab(activeReservations,
+                String.format("%s - %s", "Reservations", bold("Active")));
+        accordion.addTab(buildGrid(reservationService.getClosedByCompany()),
+                String.format("%s - %s", "Reservations", bold("Closed")));
+        accordion.addTab(buildGrid(reservationService.getAllByCompany()),
+                String.format("%s - %s", "Reservations", bold("All")));
 
-            getBody().addComponent(accordion);
-        } catch (NotFoundException e) {
-            Label noCars = new Label("No managed site!");
-            noCars.addStyleName(ValoTheme.LABEL_H1);
-            getBody().addComponent(noCars);
-            ((VerticalLayout) getBody()).setComponentAlignment(noCars, Alignment.MIDDLE_CENTER);
-        } catch (UnauthorizedAccessException e) {
-            UIUtils.showNotification(e.getMessage(), Notification.Type.WARNING_MESSAGE);
-        }
+        getBody().addComponent(accordion);
     }
 
     private Button buildMarkAsClosedButton() {
@@ -105,5 +92,4 @@ public class ManagerReservationContent extends ReservationContent {
     private Button markAsClosed;
 
     private final ReservationService reservationService;
-    private final SiteService siteService;
 }

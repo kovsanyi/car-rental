@@ -31,7 +31,7 @@ public class LoginView extends VerticalLayout implements View {
         setSpacing(false);
         setSizeFull();
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
-        setStyleName("loginview");
+        setStyleName("login-view");
         addComponent(buildContent());
     }
 

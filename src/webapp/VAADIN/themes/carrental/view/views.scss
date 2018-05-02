@@ -1,4 +1,5 @@
 @import "login";
+@import "signup";
 @import "reservation";
 @import "cars";
 @import "sites";
@@ -6,8 +7,9 @@
 @import "car";
 @import "site";
 
-@mixin car-rental-views{
-  @include carrental-login-view;
+@mixin car-rental-views {
+  @include car-rental-login-view;
+  @include car-rental-signup-view;
   @include car-rental-reservation-view;
   @include car-rental-cars-view;
   @include car-rental-sites-view;

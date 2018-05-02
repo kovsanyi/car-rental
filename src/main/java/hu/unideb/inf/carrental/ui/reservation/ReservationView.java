@@ -1,20 +1,19 @@
-package hu.unideb.inf.carrental.ui.reservations;
+package hu.unideb.inf.carrental.ui.reservation;
 
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.VerticalLayout;
-import hu.unideb.inf.carrental.car.service.CarService;
 import hu.unideb.inf.carrental.commons.security.SecurityUtils;
 import hu.unideb.inf.carrental.reservation.service.ReservationService;
 import hu.unideb.inf.carrental.site.service.SiteService;
 import hu.unideb.inf.carrental.ui.commons.component.bar.CompanyBar;
 import hu.unideb.inf.carrental.ui.commons.component.bar.CustomerBar;
 import hu.unideb.inf.carrental.ui.commons.component.menu.CarRentalMenu;
-import hu.unideb.inf.carrental.ui.reservations.content.CompanyReservationsContent;
-import hu.unideb.inf.carrental.ui.reservations.content.CustomerReservationsContent;
-import hu.unideb.inf.carrental.ui.reservations.content.ManagerReservationContent;
+import hu.unideb.inf.carrental.ui.reservation.content.CompanyReservationContent;
+import hu.unideb.inf.carrental.ui.reservation.content.CustomerReservationContent;
+import hu.unideb.inf.carrental.ui.reservation.content.ManagerReservationContent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @UIScope
@@ -22,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ReservationView extends VerticalLayout implements View {
 
     @Autowired
-    public ReservationView(ReservationService reservationService, SiteService siteService, CarService carService) {
+    public ReservationView(ReservationService reservationService, SiteService siteService) {
 
         setMargin(false);
         setSpacing(true);
@@ -35,7 +34,7 @@ public class ReservationView extends VerticalLayout implements View {
             case ROLE_COMPANY:
                 addComponent(new CompanyBar());
                 addComponent(new CarRentalMenu());
-                addComponent(new CompanyReservationsContent(reservationService));
+                addComponent(new CompanyReservationContent(reservationService));
                 break;
             case ROLE_MANAGER:
                 addComponent(new CompanyBar());
@@ -45,7 +44,7 @@ public class ReservationView extends VerticalLayout implements View {
             case ROLE_CUSTOMER:
                 addComponent(new CustomerBar());
                 addComponent(new CarRentalMenu());
-                addComponent(new CustomerReservationsContent(reservationService));
+                addComponent(new CustomerReservationContent(reservationService));
                 break;
         }
     }

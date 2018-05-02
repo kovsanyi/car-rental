@@ -1,6 +1,6 @@
-@mixin carrental-login-view {
+@mixin car-rental-login-view {
 
-  .loginview {
+  .login-view {
     background: rgb(68, 67, 63) url("../img/login-background.jpeg") no-repeat;
     background-size: 100%;
     @include animation(valo-animate-in-fade 300ms 10ms backwards);

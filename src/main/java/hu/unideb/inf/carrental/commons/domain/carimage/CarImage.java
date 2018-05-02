@@ -23,7 +23,7 @@ public class CarImage {
     }
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public Car getCar() {
         return car;
     }
@@ -50,13 +50,13 @@ public class CarImage {
         CarImage carImage = (CarImage) o;
 
         if (id != null ? !id.equals(carImage.id) : carImage.id != null) return false;
-        return car.equals(carImage.car);
+        return car.getId().equals(carImage.car.getId());
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + car.hashCode();
+        result = 31 * result + car.getId().hashCode();
         return result;
     }
 
@@ -64,7 +64,7 @@ public class CarImage {
     public String toString() {
         return "CarImage{" +
                 "id=" + id +
-                ", carID=" + car.getId() +
+                ", carId=" + car.getId() +
                 ", imageDataSize=" + imageData.length +
                 '}';
     }

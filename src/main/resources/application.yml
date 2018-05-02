@@ -1,7 +1,12 @@
 spring:
   profiles:
     active: "mysql"
+  jpa:
+    show-sql: true
   devtools:
     remote:
       restart:
         enabled: true
+vaadin:
+  servlet:
+    production-mode: true

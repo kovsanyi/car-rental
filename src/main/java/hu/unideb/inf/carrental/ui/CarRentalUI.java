@@ -28,7 +28,7 @@ import hu.unideb.inf.carrental.ui.commons.component.window.SiteWindow;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent.*;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
 import hu.unideb.inf.carrental.ui.login.LoginView;
-import hu.unideb.inf.carrental.ui.reservations.ReservationView;
+import hu.unideb.inf.carrental.ui.reservation.ReservationView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 

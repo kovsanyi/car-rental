@@ -9,7 +9,7 @@ import hu.unideb.inf.carrental.ui.carsearch.CarSearchView;
 import hu.unideb.inf.carrental.ui.commons.constant.Constants;
 import hu.unideb.inf.carrental.ui.event.CarRentalEvent;
 import hu.unideb.inf.carrental.ui.event.CarRentalEventBus;
-import hu.unideb.inf.carrental.ui.reservations.ReservationView;
+import hu.unideb.inf.carrental.ui.reservation.ReservationView;
 import hu.unideb.inf.carrental.ui.site.SiteView;
 import hu.unideb.inf.carrental.ui.sites.SitesView;
 import hu.unideb.inf.carrental.ui.statistics.StatisticsView;
